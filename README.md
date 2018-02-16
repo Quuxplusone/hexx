@@ -11,3 +11,6 @@ the directory structure in this repository for convenience.
 The manual `hexx-manual.pdf` was downloaded on 2018-02-09 from MOCAGH:
 http://mocagh.org/loadpage.php?getgame=hexx
 http://mocagh.org/miscgame/hexx-manual.pdf
+
+The walkthrough `CLUES.md` was transcribed on 2018-02-15 from MOCAGH:
+http://mocagh.org/hintbook/bookofclues2.pdf
