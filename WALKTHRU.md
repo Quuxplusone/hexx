@@ -19,6 +19,9 @@ Before the first time you go downstairs, visit a shop and buy 99 common keys. Ho
 every time you go up or down levels. Do this until you find your first backpack; then put your keys
 in your backpack.
 
+Reportedly you can hack 99 keys into your front right character's left hand by hex-editing the bytes "8F 63"
+into offset 0xB15A of your save file. I have not tested this.
+
 Cutscene Bug
 ------------
 
