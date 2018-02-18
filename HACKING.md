@@ -13,22 +13,68 @@ For torches, the second byte should be set to the remaining life of the torch (b
 For backpacks, the second byte should be set to the "backpack number" (see below).
 For empty slots, both bytes should be set to "0x00".
 
+Locations are encoded as 2-byte little-endian quantities. Each square of the dungeon map is divided
+into four quadrants for the purposes of item location. The quadrants (northwest being upper left)
+are encoded in the high-order 2 bits of the little-endian quantity:
+
+    0___ 4___
+    8___ C___
+
+So for example if 1ABC is the northwest quadrant of some tile, then 9ABC is the southwest quadrant of
+that same tile. (But remember that these will appear in the file as "BC 1A" and "BC 9A" respectively.)
+
+                            062E
+                            066C
+    06A0  06A2  06A4  06A6  06A8  06AA  06AC
+    06DE  06E0              06E8
+
+    (053A is the far corner)
+    (0758 is the dagger dead-end)
+
+0758 = "58 x7"
+
+Facing is stored as a 2-byte little-endian quantity. 0000 is due south, 0040 is due west, 0080 is
+due north, and 00C0 is due east. Then it wraps around and keeps going; it actually tracks how many
+full rotations you've made, so that 1234 is a valid facing and means "west-south-west, having netted
+exactly 18 rightward full rotations over the course of the game."
+
 Spell knowledge is encoded as a 32-bit bitfield. For example, if you know the first spell in each
 of the four schools of magic, that's "80 80 80 80". If you know all of the Earth (Green) spells,
 that's "FF 00 00 00".
 
-Character names are encoded in "HEXXSCII", which is just ASCII (capital letters only) except that
-spaces are encoded as 0xFF instead of 0x20.
 
-Offsets [0x0000 .. 0x8000) ??? 32768 bytes
+Offsets [0x0000 .. 0x6100) ??? 24832 bytes
+
+Offsets [0x6100 .. 0x8000) memory-mapped heap of floor-item records
+- Offsets 0,1 define the location of the object in the dungeon.
+- Offset 2 defines the length of this record in bytes (i.e., this byte must be at least 06).
+- Offset 3 is invariably zero.
+- Offsets 4,5 define the first item at this location; offsets 6,7 define the second item, and so on.
+However, there's some funny business occasionally. I think this is a memory-mapped data structure of some sort,
+and contains occasional garbage bytes in the interstices.
+
 
 Offsets [0x8000 .. 0x8004) ??? 4 bytes "FC ED DA CB"
-Offsets [0x8004 .. 0x8020) hold the name of the savegame as 28 bytes of ASCII.
+Offsets [0x8004 .. 0x8022) hold the name of the savegame as 29 bytes of space-padded ASCII plus a null terminator.
 
-Offsets [0x8020 .. 0xB0CC) ??? 12460 bytes
+Offsets [0x8022 .. 0xA022) memory-mapped heap of monster records (32 bytes each)
+- Offsets 0,1 store the "next record" pointer, as an offset into [0x8000 .. 0xA000).
+- ???
+Offsets [0xA022 .. 0xA02E) ??? 12 bytes
+Offsets [0xA02E .. 0xA030) define the player's location. (But modifying this is deadly.)
+Offsets [0xA030 .. 0xA032) define the player's facing. (But modifying this is deadly.)
+Offsets [0xA032 .. 0xA03A) ??? 8 bytes
+Offsets [0xA03A .. 0xA03C) is a pointer `p` of some sort.
+Offsets [0xA03C .. 0xA03E) is a pointer `p` where `0x8000 + p` is the tail of the monster list.
+Offsets [0xA03E .. 0xA040) define the item "held in the cursor."
+
+
+
+Offsets [0xA040 .. 0xB0CC) ??? 4236 bytes
 
 Offsets [0xB0CC .. 0xB136) define the front-left character (106 bytes):
-- Offsets [0xB0CC .. 0xB0CF) ??? 3 bytes
+- Offsets [0xB0CC .. 0xB0CD) defines which of the 16 characters this is.
+- Offsets [0xB0CD .. 0xB0CF) ??? 2 bytes
 - Offsets [0xB0CF .. 0xB0D0) define the character's current Level.
 - Offsets [0xB0D0 .. 0xB0D2) define the character's current SP, little-endian, 2 bytes.
 - Offsets [0xB0D2 .. 0xB0D4) define the character's max SP, little-endian, 2 bytes.
@@ -51,7 +97,8 @@ Offsets [0xB0CC .. 0xB136) define the front-left character (106 bytes):
 - Offsets [0xB10E .. 0xB10F) define the character's current CON.
 - Offsets [0xB10F .. 0xB110) define the character's intrinsic CON.
 - Offsets [0xB110 .. 0xB11C) ??? 12 bytes
-- Offsets [0xB11C .. 0xB130) contain the character's name as 20 bytes of HEXXSCII.
+- Offsets [0xB11C .. 0xB124) contains the character's first name, padded with FF bytes on the end.
+- Offsets [0xB124 .. 0xB130) contains the character's last name, padded with FF bytes on the end.
 - Offsets [0xB130 .. 0xB131) define the character's hunger level (00 = starving, FF = stuffed).
 - Offsets [0xB131 .. 0xB132) seems to always be FF.
 - Offsets [0xB132 .. 0xB136) ??? 4 bytes of zeros
@@ -66,9 +113,19 @@ Offsets [0xB278 .. 0xB298) define the contents of backpack 0x00 (found just afte
 Offsets [0xB298 .. 0xB2B8) define the contents of backpack 0x01 (found in the Tower of Grisslem).
 Offsets [0xB2B8 .. 0xB2D8) define the contents of backpack 0x02 (probably???)
 
-Offsets [0xB2D8 .. 0xEE78) ??? 15264 bytes
+Offsets [0xB2D8 .. 0xE004) ??? 11564 bytes
 
-Offsets [0xEE78 .. 0xF670) are the save-game thumbnail image, as a 60x34 bitmap, one byte per pixel (fixed palette???).
+Offsets [0xE004 .. 0xE1E8) are the front-left character's big thumbnail, as a 256-color 22x22 bitmap.
+Offsets [0xE1E8 .. 0xE2E8) are the front-left character's small thumbnail, as a 256-color 16x16 bitmap.
+Offsets [0xE2E8 .. 0xE4CC) are the front-right character's big thumbnail, as a 256-color 22x22 bitmap.
+Offsets [0xE4CC .. 0xE5CC) are the front-right character's small thumbnail, as a 256-color 16x16 bitmap.
+Offsets [0xE5CC .. 0xE7B0) are the rear-left character's big thumbnail, as a 256-color 22x22 bitmap.
+Offsets [0xE7B0 .. 0xE8B0) are the rear-left character's small thumbnail, as a 256-color 16x16 bitmap.
+Offsets [0xE8B0 .. 0xEA94) are the rear-right character's big thumbnail, as a 256-color 22x22 bitmap.
+Offsets [0xEA94 .. 0xEB94) are the rear-right character's small thumbnail, as a 256-color 16x16 bitmap.
+Offsets [0xEB94 .. 0xED78) are the big thumbnail used for dead characters, as a 256-color 22x22 bitmap.
+Offsets [0xED78 .. 0xEE78) are the small thumbnail used for dead characters, as a 256-color 16x16 bitmap.
+Offsets [0xEE78 .. 0xF670) are the save-game thumbnail image, as a 256-color 60x34 bitmap.
 
 
 Item Numbers
@@ -234,3 +291,4 @@ Byte | Item
   9B | bag of (x) gold
 
 Items `9C` through `FF` are just garbage.
+Notably, "EC" is an item that looks like a mithril axe but whose name is "Moon Moon".

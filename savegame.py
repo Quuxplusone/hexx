@@ -55,38 +55,50 @@ def rgb_distance(rgb1, rgb2):
     return math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2)
 
 def thumbnail_palette_closest(rgb):
-    indices = range(256)
-    def key(i):
-        return rgb_distance(rgb, thumbnail_palette[i])
-    return sorted(indices, key=key)[0]
+    def key(p):
+        return rgb_distance(rgb, thumbnail_palette[p])
+    return sorted(range(256), key=key)[0]
 
-def hexx_thumbnail_from_file(png_fname):
+def hexx_thumbnail_from_file(png_fname, w, h):
     try:
         from PIL import Image
     except ImportError:
         assert False, "Run 'pip install pillow' to install the PIL module"
-    input_image = Image.open(png_fname).convert('RGB').resize((60, 34), Image.LANCZOS)
-    assert input_image.size == (60, 34)
+    input_image = Image.open(png_fname).convert('RGB').resize((w, h), Image.LANCZOS)
+    assert input_image.size == (w, h)
     input_data = [
-        [input_image.getpixel((i,j)) for i in range(60)]
-        for j in range(34)
+        [input_image.getpixel((x, y)) for x in range(w)] for y in range(h)
     ]
-    output_data = [None] * (34 * 60)
-    for y in range(34):
-        for x in range(60):
+    output_data = [None] * (w * h)
+    for y in range(h):
+        for x in range(w):
             rgb = input_data[y][x]
             p = thumbnail_palette_closest(rgb)
-            output_data[y*60+x] = p
+            output_data[y*w+x] = p
             error = map(operator.div, map(operator.sub, thumbnail_palette[p], rgb), [16.0]*3)
-            if (x+1 < 60):
+            if (x+1 < w):
                 input_data[y][x+1] = tuple(map(operator.add, input_data[y][x+1], map(operator.mul, error, [7]*3)))
-            if (y+1 < 34):
+            if (y+1 < h):
                 if (0 <= x-1):
                     input_data[y+1][x-1] = tuple(map(operator.add, input_data[y+1][x-1], map(operator.mul, error, [3]*3)))
                 input_data[y+1][x] = tuple(map(operator.add, input_data[y+1][x], map(operator.mul, error, [5]*3)))
-                if (x+1 < 60):
+                if (x+1 < w):
                     input_data[y+1][x+1] = tuple(map(operator.add, input_data[y+1][x+1], map(operator.mul, error, [1]*3)))
     return ''.join(map(chr, output_data))
+
+def dump_hexx_thumbnail(png_fname, content, w):
+    try:
+        from PIL import Image
+    except ImportError:
+        assert False, "Run 'pip install pillow' to install the PIL module"
+    h = (len(content) + w - 1) / w
+    content = content.ljust(w * h, '\0')
+    output_image = Image.new('RGB', (w, h))
+    for y in range(h):
+        for x in range(w):
+            p = ord(content[y*w+x])
+            output_image.putpixel((x, y), thumbnail_palette[p])
+    output_image.save(png_fname, 'PNG')
 
 def as_hex(s):
     return ' '.join('%02X' % ord(ch) for ch in s)
@@ -192,9 +204,9 @@ class Items:
     @staticmethod
     def is_talisman(item): return 0x90 <= item <= 0x93
     @staticmethod
-    def is_gem(item): return item in [MOON_GEM, FIRE_GEM]
+    def is_gem(item): return item in [0x95, 0x97]
     @staticmethod
-    def is_backpack(item): return item == BACKPACK
+    def is_backpack(item): return item == 0x98
     @staticmethod
     def is_torch(item): return 0x99 <= item <= 0x9A
     @staticmethod
@@ -382,6 +394,21 @@ class Items:
     LIGHTED_TORCH       = 0x9A
     BAG_OF_GOLD         = 0x9B
 
+    @classmethod
+    def textual_description(cls, item, count):
+        result = None
+        for a in dir(cls):
+            if type(getattr(cls, a)) is int and item == getattr(cls, a):
+                result = a
+                break
+        if result is None:
+            result = 'GLITCH_%02X' % item
+        if Items.is_backpack(item):
+            result += ' %d' % count
+        elif count != 1:
+            result += ' (%d)' % count
+        return result
+
 
 class Inventory:
     def __init__(self, is_character_inventory, contents):
@@ -492,7 +519,8 @@ class Character:
         assert len(contents) == 106, 'Character data has the wrong length'
         self.position_ = position
         (
-            self.bytes_B0CC_B0CF,
+            self.character_index,
+            self.bytes_B0CD_B0CF,
             self.level,
             self.current_sp,
             self.max_sp,
@@ -508,24 +536,27 @@ class Character:
             self.current_dex, self.intrinsic_dex,
             self.current_con, self.intrinsic_con,
             self.bytes_B110_B11C,
-            character_name_contents,
+            self.first_name,
+            self.last_name,
             self.hunger,
             self.byte_B131,
             self.bytes_B132_B136,
         ) = struct.unpack(
-            '<3sBHHHH4sII32sIbBbBbBbB12s20sBB4s',
+            '<B2sBHHHH4sII32sIbBbBbBbB12s8s12sBB4s',
             contents,
         )
         self.spells = struct.unpack("<I", struct.pack(">I", self.spells))[0]  # swap endianness
-        self.character_name = character_name_contents.rstrip('\xFF').replace('\xFF', '\x20')
+        self.first_name = self.first_name.rstrip('\xFF')
+        self.last_name = self.last_name.rstrip('\xFF')
         self.inventory = Inventory(True, inventory_contents)
         assert self.byte_B131 == 0xFF
         assert self.bytes_B132_B136 == '\0\0\0\0'
 
     def dumps(self):
         return struct.pack(
-            '3sBHHHH4sII32sIbBbBbBbB12s20sBB4s',
-            self.bytes_B0CC_B0CF,
+            '<B2sBHHHH4sII32sIbBbBbBbB12s8s12sBB4s',
+            self.character_index,
+            self.bytes_B0CD_B0CF,
             self.level,
             self.current_sp,
             self.max_sp,
@@ -541,7 +572,8 @@ class Character:
             self.current_dex, self.intrinsic_dex,
             self.current_con, self.intrinsic_con,
             self.bytes_B110_B11C,
-            self.character_name.replace('\x20', '\xFF').ljust(20, '\xFF'),
+            self.first_name.ljust(8, '\xFF'),
+            self.last_name.ljust(12, '\xFF'),
             self.hunger,
             self.byte_B131,
             self.bytes_B132_B136,
@@ -565,8 +597,17 @@ class SaveGame:
         assert len(contents) == 0xF670, 'Savefile has the wrong length'
         self.bytes_0000_8000 = contents[0x0000:0x8000]
         self.bytes_8000_8004 = contents[0x8000:0x8004]
-        self.name = contents[0x8004:0x8020].rstrip('\x20')
-        self.bytes_8020_B0CC = contents[0x8020:0xB0CC]
+        assert contents[0x8000:0x8004] == '\xFC\xED\xDA\xCB'
+        self.name = contents[0x8004:0x8021].rstrip('\x20')
+        assert contents[0x8021] == '\0'
+        self.bytes_8022_A02E = contents[0x8022:0xA02E]
+        (
+            self.player_position,
+            self.player_facing,
+        ) = struct.unpack('<HH', contents[0xA02E:0xA032])
+        self.bytes_A032_A03E = contents[0xA032:0xA03E]
+        self.held_in_cursor = struct.unpack('<BB', contents[0xA03E:0xA040])
+        self.bytes_A040_B0CC = contents[0xA040:0xB0CC]
         self.characters = [
             Character(0, contents[0xB0CC:0xB136]),
             Character(1, contents[0xB136:0xB1A0]),
@@ -589,8 +630,13 @@ class SaveGame:
         contents = ''
         contents += self.bytes_0000_8000
         contents += self.bytes_8000_8004
-        contents += self.name.ljust(28, '\x20')
-        contents += self.bytes_8020_B0CC
+        contents += self.name.ljust(29, '\x20')
+        contents += '\0'
+        contents += self.bytes_8022_A02E
+        contents += struct.pack('<HH', self.player_position, self.player_facing)
+        contents += self.bytes_A032_A03E
+        contents += ''.join(map(chr, self.held_in_cursor))
+        contents += self.bytes_A040_B0CC
         for character in self.characters:
             contents += character.dumps()
         contents += self.bytes_B274_B278
@@ -606,11 +652,6 @@ class SaveGame:
         with open(fname, "rb") as f:
             contents = f.read()
         return SaveGame(contents)
-
-    def dump_to_file(self, fname):
-        contents = self.dumps()
-        with open(fname, "wb") as f:
-            f.write(contents)
 
     def accessible_backpacks(self):
         packs = set()
@@ -691,29 +732,73 @@ class SaveGame:
             character.inventory.set_shield(Items.CRYSTAL_SHIELD)
             character.inventory.set_boots(Items.CRYSTAL_BOOTS)
 
-def dump_file(fname, start, end):
+def dump_file(fname, start, end, by, art=False, to_png=None):
     with open(fname, "rb") as f:
         contents = f.read()
     contents = contents[start:end]
-    for i in range(0, len(contents), 32):
-        print '0x%04x %s' % (start + i, as_hex(contents[i:i+32]))
+    if to_png is not None:
+        dump_hexx_thumbnail(to_png, contents, by)
+    elif art:
+        for i in range(0, len(contents), by):
+            print '0x%04x %s' % (start + i, as_pixel(contents[i:i + by]))
+    else:
+        for i in range(0, len(contents), by):
+            print '0x%04x %s' % (start + i, as_hex(contents[i:i + by]))
 
-def image_file(fname):
+def describe_items(fname):
     with open(fname, "rb") as f:
-        contents = f.read()[0xee78:]
-    for i in range(0, len(contents), 60):
-        print hex(i), as_pixel(contents[i:i+60])
+        contents = f.read()
+    counted = 0x6100
+    contents = contents[counted:0x8000].rstrip('\0')
+    while contents:
+        loc = struct.unpack('>H', contents[:2])[0]
+        nitems = (ord(contents[2]) / 2) - 2
+        if contents[3] != '\0':
+            contents = '  ' + contents
+            print 'shit, something fucked up'
+            nitems = (ord(contents[2]) / 2) - 2
+        contents = contents[4:]
+        counted += 4
+        descriptions = []
+        for i in range(nitems):
+            item = ord(contents[0])
+            count = ord(contents[1])
+            contents = contents[2:]
+            counted += 2
+            descriptions += [Items.textual_description(item, count)]
+        print '%04X: %s' % (loc, ', '.join(descriptions))
+
+def describe_monsters(fname):
+    with open(fname, "rb") as f:
+        contents = f.read()
+    tail = struct.unpack('<H', contents[0xA03C:0xA03E])[0]
+    ptr = 0x8022
+    while ptr < 0xA000:
+        if contents[ptr:ptr+32] == '\0' * 32:
+            break
+        record = list(struct.unpack('<HHHHHHHHHHHHHHHH', contents[ptr:ptr+32]))
+        nextptr = 0x8000 + record[0]
+        record = record[1:]
+        record_str = ' '.join('%04X' % i for i in record)
+        print '%04X: (%s) next=%04X' % (ptr, record_str, nextptr)
+        ptr += 32
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     group = parser.add_argument_group(title='plus exactly one of the following actions').add_mutually_exclusive_group(required=True)
     group.add_argument('--dump', action='store_true', help='dump the file as hex')
     group.add_argument('--dump-range', type=str, metavar='1234:1238', help='dump just a portion of the file(s) as hex')
+    group.add_argument('--describe-items', action='store_true', help='list all items on the dungeon floor')
+    group.add_argument('--describe-monsters', action='store_true', help='list all tracked monsters')
     group.add_argument('--edit', action='store_true', help='make changes to the file (and save a backup if necessary)')
+    group.add_argument('--blank-range', type=str, metavar='1234:1238', help='zero out a portion of the file')
     group.add_argument('--gain-common-keys', action='store_true', help='make changes to the file (and save a backup if necessary)')
     group.add_argument('--gain-crystal-kit', action='store_true', help='make changes to the file (and save a backup if necessary)')
     group.add_argument('--gain-talismans', action='store_true', help='make changes to the file (and save a backup if necessary)')
     group.add_argument('--replace-thumbnail', metavar='IMAGE.PNG', type=str, help='make changes to the file (and save a backup if necessary)')
+    parser.add_argument('--by', type=int, default=32, help='column width for --dump and --dump-range')
+    parser.add_argument('--art', action='store_true', help='dump as ASCII art instead of hex')
+    parser.add_argument('--to-png', type=str, help='dump as PNG image instead of hex')
     parser.add_argument('filename', nargs='+', help='File(s) to manipulate')
     options = parser.parse_args()
     options.edit = options.edit or any([
@@ -721,15 +806,22 @@ if __name__ == '__main__':
         options.gain_crystal_kit,
         options.gain_talismans,
         options.replace_thumbnail,
+        options.blank_range,
     ])
 
     if options.dump:
         for fname in options.filename:
-            dump_file(fname, 0x0000, 0xFFFF)
+            dump_file(fname, 0x0000, 0xFFFF, by=options.by, art=options.art, to_png=options.to_png)
     elif options.dump_range:
         start, end = (int(x, 16) for x in options.dump_range.split(':'))
         for fname in options.filename:
-            dump_file(fname, start, end)
+            dump_file(fname, start, end, by=options.by, art=options.art, to_png=options.to_png)
+    elif options.describe_items:
+        for fname in options.filename:
+            describe_items(fname)
+    elif options.describe_monsters:
+        for fname in options.filename:
+            describe_monsters(fname)
     elif options.edit:
         if len(options.filename) != 1:
             parser.error('For safety, editing is restricted to only one file at a time')
@@ -747,7 +839,12 @@ if __name__ == '__main__':
                 sg.gain_item(Items.SHASPUOKS_TEAR)
                 sg.gain_item(Items.HORN_OF_XTLALTIC)
             elif options.replace_thumbnail is not None:
-                sg.thumbnail = hexx_thumbnail_from_file(options.replace_thumbnail)
+                sg.thumbnail = hexx_thumbnail_from_file(options.replace_thumbnail, w=60, h=34)
             else:
-                assert False, 'no edits were specified'
-            sg.dump_to_file(fname)
+                pass # assert False, 'no edits were specified'
+            contents = sg.dumps()
+            if options.blank_range:
+                start, end = (int(x, 16) for x in options.blank_range.split(':'))
+                contents = contents[:start] + ('\0' * (end - start)) + contents[end:]
+            with open(fname, "wb") as f:
+                f.write(contents)
