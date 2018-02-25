@@ -160,6 +160,24 @@ class Spells:
     WYCHWIND = 0x00000002
     MINDRAGE = 0x00000001
 
+    @staticmethod
+    def from_index(i):
+        if i == 0x20:
+            return None
+        return 0x80000000 >> i
+
+    @staticmethod
+    def to_index(spell):
+        if spell is None:
+            return 32
+        for i in xrange(32):
+            if spell == Spells.from_index(i):
+                return i
+        assert False
+
+assert Spells.from_index(0) == Spells.ARMOUR, 'sanity check'
+assert Spells.from_index(31) == Spells.MINDRAGE, 'sanity check'
+
 class Items:
     @staticmethod
     def is_helm(item): return 0x01 <= item <= 0x09
@@ -395,7 +413,7 @@ class Items:
     BAG_OF_GOLD         = 0x9B
 
     @classmethod
-    def textual_description(cls, item, count):
+    def textual_description(cls, item, count=1):
         result = None
         for a in dir(cls):
             if type(getattr(cls, a)) is int and item == getattr(cls, a):
@@ -526,7 +544,8 @@ class Character:
             self.max_sp,
             self.current_hp,
             self.max_hp,
-            self.bytes_B0D8_B0DC,
+            self.current_vitality,
+            self.max_vitality,
             self.gp,
             self.xp,
             inventory_contents,
@@ -535,16 +554,21 @@ class Character:
             self.current_int, self.intrinsic_int,
             self.current_dex, self.intrinsic_dex,
             self.current_con, self.intrinsic_con,
-            self.bytes_B110_B11C,
+            self.bytes_B110_B118,
+            self.readied_spell,
+            self.readied_spellbook,
+            self.bytes_B11A_B11C,
             self.first_name,
             self.last_name,
             self.hunger,
             self.byte_B131,
             self.bytes_B132_B136,
         ) = struct.unpack(
-            '<B2sBHHHH4sII32sIbBbBbBbB12s8s12sBB4s',
+            '<B2sBHHHHHHII32sIbBbBbBbB8sBB2s8s12sBB4s',
             contents,
         )
+        assert 0 <= self.readied_spellbook <= 3
+        self.readied_spell = Spells.from_index(self.readied_spell)
         self.spells = struct.unpack("<I", struct.pack(">I", self.spells))[0]  # swap endianness
         self.first_name = self.first_name.rstrip('\xFF')
         self.last_name = self.last_name.rstrip('\xFF')
@@ -554,7 +578,7 @@ class Character:
 
     def dumps(self):
         return struct.pack(
-            '<B2sBHHHH4sII32sIbBbBbBbB12s8s12sBB4s',
+            '<B2sBHHHHHHII32sIbBbBbBbB8sBB2s8s12sBB4s',
             self.character_index,
             self.bytes_B0CD_B0CF,
             self.level,
@@ -562,7 +586,8 @@ class Character:
             self.max_sp,
             self.current_hp,
             self.max_hp,
-            self.bytes_B0D8_B0DC,
+            self.current_vitality,
+            self.max_vitality,
             self.gp,
             self.xp,
             self.inventory.dumps(),
@@ -571,7 +596,10 @@ class Character:
             self.current_int, self.intrinsic_int,
             self.current_dex, self.intrinsic_dex,
             self.current_con, self.intrinsic_con,
-            self.bytes_B110_B11C,
+            self.bytes_B110_B118,
+            Spells.to_index(self.readied_spell),
+            self.readied_spellbook,
+            self.bytes_B11A_B11C,
             self.first_name.ljust(8, '\xFF'),
             self.last_name.ljust(12, '\xFF'),
             self.hunger,
@@ -597,15 +625,21 @@ class SaveGame:
         assert len(contents) == 0xF670, 'Savefile has the wrong length'
         self.bytes_0000_8000 = contents[0x0000:0x8000]
         self.bytes_8000_8004 = contents[0x8000:0x8004]
-        assert contents[0x8000:0x8004] == '\xFC\xED\xDA\xCB'
+        assert self.bytes_8000_8004 == '\xFC\xED\xDA\xCB'
         self.name = contents[0x8004:0x8021].rstrip('\x20')
         assert contents[0x8021] == '\0'
-        self.bytes_8022_A02E = contents[0x8022:0xA02E]
+        self.bytes_8022_A02C = contents[0x8022:0xA02C]
         (
-            self.player_position,
             self.player_facing,
-        ) = struct.unpack('<HH', contents[0xA02E:0xA032])
-        self.bytes_A032_A03E = contents[0xA032:0xA03E]
+            self.player_position,
+            self.character_spells_selected,
+            self.character_inventory_selected,
+        ) = struct.unpack('<HHHH', contents[0xA02C:0xA034])
+        if self.character_inventory_selected == 0x81:
+            self.character_inventory_selected = None
+        assert self.character_inventory_selected in [None, 0, 1, 2, 3]
+        assert self.character_spells_selected in [0, 1, 2, 3]
+        self.bytes_A034_A03E = contents[0xA034:0xA03E]
         self.held_in_cursor = struct.unpack('<BB', contents[0xA03E:0xA040])
         self.bytes_A040_B0CC = contents[0xA040:0xB0CC]
         self.characters = [
@@ -632,9 +666,14 @@ class SaveGame:
         contents += self.bytes_8000_8004
         contents += self.name.ljust(29, '\x20')
         contents += '\0'
-        contents += self.bytes_8022_A02E
-        contents += struct.pack('<HH', self.player_position, self.player_facing)
-        contents += self.bytes_A032_A03E
+        contents += self.bytes_8022_A02C
+        contents += struct.pack('<HHHH',
+            self.player_facing,
+            self.player_position,
+            self.character_spells_selected,
+            0x81 if self.character_inventory_selected is None else self.character_inventory_selected,
+        )
+        contents += self.bytes_A034_A03E
         contents += ''.join(map(chr, self.held_in_cursor))
         contents += self.bytes_A040_B0CC
         for character in self.characters:
@@ -726,6 +765,7 @@ class SaveGame:
 
     def gain_crystal_kit(self):
         for character in self.characters:
+            character.learn_spells(Spells.ALL)
             character.inventory.set_helm(Items.CRYSTAL_HELM)
             character.inventory.set_armour(Items.CRYSTAL_PLATE)
             character.inventory.set_gloves(Items.CRYSTAL_GLOVES)
@@ -768,20 +808,74 @@ def describe_items(fname):
             descriptions += [Items.textual_description(item, count)]
         print '%04X: %s' % (loc, ', '.join(descriptions))
 
-def describe_monsters(fname):
+class MonsterRecord:
+    def __init__(self, contents):
+        self.contents = contents
+        record = list(struct.unpack('<HHHHHHHHHHHHHHHH', contents))
+        self.nextptr = 0x8000 + record[0]
+        self.data = record[1:]
+        self.visited = False
+
+    def str(self):
+        return ' '.join('%04X' % i for i in self.data)
+
+def find_best_start(viable_records, tail, length):
+    results = [(length, tail)]
+    for ptr, monster in viable_records.iteritems():
+        if monster.nextptr == tail:
+            results.append(find_best_start(viable_records, ptr, length+1))
+    return max(results)
+
+def describe_monsters(fname, new_tail):
     with open(fname, "rb") as f:
         contents = f.read()
-    tail = struct.unpack('<H', contents[0xA03C:0xA03E])[0]
-    ptr = 0x8022
-    while ptr < 0xA000:
-        if contents[ptr:ptr+32] == '\0' * 32:
-            break
-        record = list(struct.unpack('<HHHHHHHHHHHHHHHH', contents[ptr:ptr+32]))
-        nextptr = 0x8000 + record[0]
-        record = record[1:]
-        record_str = ' '.join('%04X' % i for i in record)
-        print '%04X: (%s) next=%04X' % (ptr, record_str, nextptr)
-        ptr += 32
+    head = 0x8000 + struct.unpack('<H', contents[0xA03A:0xA03C])[0]
+    tail = 0x8000 + struct.unpack('<H', contents[0xA03C:0xA03E])[0]
+    viable_records = {}
+    for ptr in range(0x8022, 0xA000):
+        viable_records[ptr] = MonsterRecord(contents[ptr:ptr+32])
+    print 'EXPECTED HEAD IS %04X' % head
+    print 'EXPECTED TAIL IS %04X' % tail
+    if new_tail:
+        _, p = find_best_start(viable_records, new_tail, 0)
+        print 'BEST HEAD IS %04X' % p
+    else:
+        p = head
+    while p in viable_records:
+        monster = viable_records[p]
+        print '%04X: (%s) next=%04X' % (p, monster.str(), monster.nextptr)
+        p = monster.nextptr
+    return
+
+def describe_map(fname):
+    with open(fname, "rb") as f:
+        contents = f.read()
+    def glyphfor(tile):
+        tile &= ~0x0008  # remove map-visibility bit
+        if (tile & 0x0001) == 0:  # if it is passable...
+            tile &= ~0x0080  # remove monster bit
+            tile &= ~0x0040  # remove item bit
+        if (tile == 0x0000):
+            return ' ....'
+        elif (tile in [0x0001, 0x0181, 0x0191, 0x01A1, 0x01B1]):
+            return ' ####'
+        elif (tile == 0x0103):
+            return '  <> '
+        elif (tile == 0x0003):
+            return ' BED_'
+        else:
+            return ' %04X' % (tile & 0xFFFF)
+        if (tile & 0x0001):
+            return '#'
+        else:
+            return '.'
+    total_tiles = []
+    for y in range(14):
+        tiles = struct.unpack('<14H', contents[0xA50A + 2*14*y : 0xA50A + 2*14*(y+1)])
+        print ''.join(glyphfor(tile) for tile in tiles)
+        total_tiles += list(glyphfor(tile) for tile in tiles)
+    for t in sorted(set(total_tiles)):
+        print t, '- '
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -789,6 +883,7 @@ if __name__ == '__main__':
     group.add_argument('--dump', action='store_true', help='dump the file as hex')
     group.add_argument('--dump-range', type=str, metavar='1234:1238', help='dump just a portion of the file(s) as hex')
     group.add_argument('--describe-items', action='store_true', help='list all items on the dungeon floor')
+    group.add_argument('--describe-map', action='store_true', help='describe the current level')
     group.add_argument('--describe-monsters', action='store_true', help='list all tracked monsters')
     group.add_argument('--edit', action='store_true', help='make changes to the file (and save a backup if necessary)')
     group.add_argument('--blank-range', type=str, metavar='1234:1238', help='zero out a portion of the file')
@@ -796,17 +891,20 @@ if __name__ == '__main__':
     group.add_argument('--gain-crystal-kit', action='store_true', help='make changes to the file (and save a backup if necessary)')
     group.add_argument('--gain-talismans', action='store_true', help='make changes to the file (and save a backup if necessary)')
     group.add_argument('--replace-thumbnail', metavar='IMAGE.PNG', type=str, help='make changes to the file (and save a backup if necessary)')
+    group.add_argument('--reveal-map', action='store_true', help='reveal the current level')
     parser.add_argument('--by', type=int, default=32, help='column width for --dump and --dump-range')
+    parser.add_argument('--tail', type=str, default=None, help='address of a presumed record in the monster list')
     parser.add_argument('--art', action='store_true', help='dump as ASCII art instead of hex')
     parser.add_argument('--to-png', type=str, help='dump as PNG image instead of hex')
     parser.add_argument('filename', nargs='+', help='File(s) to manipulate')
     options = parser.parse_args()
     options.edit = options.edit or any([
+        options.blank_range,
         options.gain_common_keys,
         options.gain_crystal_kit,
         options.gain_talismans,
         options.replace_thumbnail,
-        options.blank_range,
+        options.reveal_map,
     ])
 
     if options.dump:
@@ -820,8 +918,12 @@ if __name__ == '__main__':
         for fname in options.filename:
             describe_items(fname)
     elif options.describe_monsters:
+        tail = int(options.tail, 16) if options.tail else None
         for fname in options.filename:
-            describe_monsters(fname)
+            describe_monsters(fname, tail)
+    elif options.describe_map:
+        for fname in options.filename:
+            describe_map(fname)
     elif options.edit:
         if len(options.filename) != 1:
             parser.error('For safety, editing is restricted to only one file at a time')
@@ -843,8 +945,29 @@ if __name__ == '__main__':
             else:
                 pass # assert False, 'no edits were specified'
             contents = sg.dumps()
+            if options.reveal_map:
+                for i in range(0xA50A, 0xAC8C, 2):
+                    x = ord(contents[i+0])
+                    y = ord(contents[i+1])
+                    contents = contents[:i] + chr(x | 0x08) + chr(y) + contents[i+2:]
+                """
+                map_contents = ''
+                for y in range(31):
+                    for x in range(31):
+                        if y == 0:
+                            tile = ((x+1) << 8) + 0x07
+                            tile &= ~0x00C0  # remove monsters/items
+                            tile |= 0x0008  # add visibility
+                            map_contents += struct.pack('<H', tile)
+                        else:
+                            map_contents += '\x08\x00'
+                contents = contents[:0xA50A] + map_contents + contents[0xAC8C:]
+                contents = contents[:0x8022] + ('\0' * (0xA002-0x8022)) + contents[0xA002:] # kill monsters
+"""
             if options.blank_range:
-                start, end = (int(x, 16) for x in options.blank_range.split(':'))
-                contents = contents[:start] + ('\0' * (end - start)) + contents[end:]
+                for r in options.blank_range.split(','):
+                    start, end = (int(x, 16) for x in r.split(':'))
+                    middle = ('\0' * (end - start))
+                    contents = contents[:start] + middle + contents[end:]
             with open(fname, "wb") as f:
                 f.write(contents)

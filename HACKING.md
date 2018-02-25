@@ -58,19 +58,30 @@ Offsets [0x8000 .. 0x8004) ??? 4 bytes "FC ED DA CB"
 Offsets [0x8004 .. 0x8022) hold the name of the savegame as 29 bytes of space-padded ASCII plus a null terminator.
 
 Offsets [0x8022 .. 0xA022) memory-mapped heap of monster records (32 bytes each)
-- Offsets 0,1 store the "next record" pointer, as an offset into [0x8000 .. 0xA000).
+- Offsets 0,1 store the "next record" pointer, as an offset into [0x8000 .. 0xA000). The special value "FF FF" means "done."
 - ???
-Offsets [0xA022 .. 0xA02E) ??? 12 bytes
+Offsets [0xA022 .. 0xA02E) ??? 10 bytes
+Offsets [0xA02C .. 0xA02E) define the player's facing. (But modifying this is deadly.)
 Offsets [0xA02E .. 0xA030) define the player's location. (But modifying this is deadly.)
-Offsets [0xA030 .. 0xA032) define the player's facing. (But modifying this is deadly.)
-Offsets [0xA032 .. 0xA03A) ??? 8 bytes
-Offsets [0xA03A .. 0xA03C) is a pointer `p` of some sort.
-Offsets [0xA03C .. 0xA03E) is a pointer `p` where `0x8000 + p` is the tail of the monster list.
+Offsets [0xA030 .. 0xA032) define the character whose spells are visible (0..3).
+Offsets [0xA032 .. 0xA034) define the highlighted character (0..3, or 0x81 for "none").
+Offsets [0xA034 .. 0xA03A) ??? 6 bytes
+Offsets [0xA03A .. 0xA03C) is a pointer `p` where `0x8000 + p` is the head of the monster list (???).
+Offsets [0xA03C .. 0xA03E) is a pointer `p` where `0x8000 + p` is 32 bytes past the tail of the monster list.
 Offsets [0xA03E .. 0xA040) define the item "held in the cursor."
 
-
-
 Offsets [0xA040 .. 0xB0CC) ??? 4236 bytes
+
+Offsets [0xA50A .. 0xAC8C) define map data for the current level (up to 31x31x2 bytes).
+Each dungeon tile is represented by a 2-byte little-endian value.
+Flag 0080 is "monster(s) here"
+Flag 0040 is "item(s) here"
+Flag 0008 is "explored, i.e., show on map"
+Bits 0101 indicate a wall decoration of some kind.
+
+The banner designs are not controllable; they cycle based on (x,y) coordinates.
+The obelisk/brazier designs are not controllable; they cycle every 4x4 tiles.
+
 
 Offsets [0xB0CC .. 0xB136) define the front-left character (106 bytes):
 - Offsets [0xB0CC .. 0xB0CD) defines which of the 16 characters this is.
@@ -80,8 +91,8 @@ Offsets [0xB0CC .. 0xB136) define the front-left character (106 bytes):
 - Offsets [0xB0D2 .. 0xB0D4) define the character's max SP, little-endian, 2 bytes.
 - Offsets [0xB0D4 .. 0xB0D6) define the character's current HP, little-endian, 2 bytes.
 - Offsets [0xB0D6 .. 0xB0D8) define the character's max HP, little-endian, 2 bytes.
-- Offsets [0xB0D8 .. 0xB0DA) ??? 2 bytes
-- Offsets [0xB0DA .. 0xB0DC) ??? 2 bytes
+- Offsets [0xB0D8 .. 0xB0DA) define the character's current vitality (blue bar).
+- Offsets [0xB0DA .. 0xB0DC) define the character's max vitality (blue bar).
 - Offsets [0xB0DC .. 0xB0E0) define the character's GP, little-endian, 4 bytes.
 - Offsets [0xB0E0 .. 0xB0E4) define the character's XP, little-endian, 4 bytes.
 - Offsets [0xB0E4 .. 0xB0F0) define the character's worn items.
@@ -96,7 +107,10 @@ Offsets [0xB0CC .. 0xB136) define the front-left character (106 bytes):
 - Offsets [0xB10D .. 0xB10E) define the character's intrinsic DEX.
 - Offsets [0xB10E .. 0xB10F) define the character's current CON.
 - Offsets [0xB10F .. 0xB110) define the character's intrinsic CON.
-- Offsets [0xB110 .. 0xB11C) ??? 12 bytes
+- Offsets [0xB110 .. 0xB118) ??? 8 bytes
+- Offsets [0xB118 .. 0xB119) defines the character's readied spell (00 = armour, 1F = mindrage, 20 = no spell)
+- Offsets [0xB119 .. 0xB11A) defines the character's readied spellbook (00 = green, 03 = purple)
+- Offsets [0xB11A .. 0xB11C) ??? 2 bytes
 - Offsets [0xB11C .. 0xB124) contains the character's first name, padded with FF bytes on the end.
 - Offsets [0xB124 .. 0xB130) contains the character's last name, padded with FF bytes on the end.
 - Offsets [0xB130 .. 0xB131) define the character's hunger level (00 = starving, FF = stuffed).
