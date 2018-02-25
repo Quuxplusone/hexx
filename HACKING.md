@@ -22,16 +22,18 @@ are encoded in the high-order 2 bits of the little-endian quantity:
 
 So for example if 1ABC is the northwest quadrant of some tile, then 9ABC is the southwest quadrant of
 that same tile. (But remember that these will appear in the file as "BC 1A" and "BC 9A" respectively.)
+Locations on the current level (such as the player's position, and floor-items in the "current level"
+cache) are represented as indices into the current level's map (so, 2*(y*LEVELWIDTH+x)). For example,
+location C000 represents the southeast corner of the northeast corner of the map, and if the current
+level is exactly 16 tiles wide, then 0022 represents the NE corner of the tile southeast of that one
+(because 2*(1*16+1) = 0x22).
 
-                            062E
-                            066C
-    06A0  06A2  06A4  06A6  06A8  06AA  06AC
-    06DE  06E0              06E8
-
-    (053A is the far corner)
-    (0758 is the dagger dead-end)
-
-0758 = "58 x7"
+"Floor-items" are represented as lists of consecutive variable-length records in the following format:
+    <location> <record-length> <item-slot...>
+where "location" is an index into the current level's map (so, 2*(y*LEVELWIDTH+x), with the 0xC000 bits
+indicating the quadrant of the tile), "record-length" is 4+2*ITEMCOUNT, and the next ITEMCOUNT "item-slots"
+use the usual representation for inventory slots except that usually single keys get a count of 10
+for some as-yet-unknown reason.
 
 The player's facing is stored as a 2-byte little-endian quantity. 0000 is due south, 0040 is due west,
 0080 is due north, and 00C0 is due east. Then it wraps around and keeps going; it actually tracks
@@ -68,7 +70,8 @@ Offsets [0xA02C .. 0xA02E) define the player's facing.
 Offsets [0xA02E .. 0xA030) define the player's location. (But modifying this is deadly.)
 Offsets [0xA030 .. 0xA032) define the character whose spells are visible (0..3).
 Offsets [0xA032 .. 0xA034) define the highlighted character (0..3, or 0x81 for "none").
-Offsets [0xA034 .. 0xA03A) ??? 6 bytes
+Offsets [0xA034 .. 0xA038) ??? 4 bytes
+Offsets [0xA038 .. 0xA03A) is the length of the global items list starting at 0x6100.
 Offsets [0xA03A .. 0xA03C) is a pointer `p` where `0x8000 + p` is the head of the monster list (???).
 Offsets [0xA03C .. 0xA03E) is a pointer `p` where `0x8000 + p` is 32 bytes past the tail of the monster list.
 Offsets [0xA03E .. 0xA040) define the item "held in the cursor."
@@ -135,6 +138,15 @@ Offsets [0xB2A8 .. 0xB2C0) define the contents of backpack 0x02 ().
 Offsets [0xB2C0 .. 0xB2D8) define the contents of backpack 0x03 ().
 
 Offsets [0xB2D8 .. 0xE004) ??? 11564 bytes
+
+
+Offsets [0xB2F4 .. 0xB2F6) define the number of bytes in the floor-item-list that follows.
+- The next that-many bytes [0xB2F6 ...) define the floor-items on the current level.
+- Blanking this data in a save file removes the items from the current level. When you change levels, this cached data
+  is written back into the compressed global data, which means that the items disappear from there too, forever.
+- Blanking the global data will NOT affect the items on the current level, but it can make the game crash when
+  you change levels and the game tries to load items from global that aren't there anymore.
+
 
 Offsets [0xE004 .. 0xE1E8) are the front-left character's big thumbnail, as a 256-color 22x22 bitmap.
 Offsets [0xE1E8 .. 0xE2E8) are the front-left character's small thumbnail, as a 256-color 16x16 bitmap.

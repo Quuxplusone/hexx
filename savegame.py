@@ -715,28 +715,31 @@ def dump_file(fname, start, end, by, art=False, to_png=None):
         for i in range(0, len(contents), by):
             print '0x%04x %s' % (start + i, as_hex(contents[i:i + by]))
 
-def describe_items(fname):
+def describe_items(fname, start, end):
     with open(fname, "rb") as f:
         contents = f.read()
-    counted = 0x6100
-    contents = contents[counted:0x8000].rstrip('\0')
+    contents = contents[start:end]
     while contents:
-        loc = struct.unpack('>H', contents[:2])[0]
+        loc = struct.unpack('<H', contents[:2])[0]
         nitems = (ord(contents[2]) / 2) - 2
-        if contents[3] != '\0':
-            contents = '  ' + contents
-            print 'shit, something fucked up'
-            nitems = (ord(contents[2]) / 2) - 2
+        assert nitems <= len(contents) / 2
         contents = contents[4:]
-        counted += 4
         descriptions = []
         for i in range(nitems):
             item = ord(contents[0])
             count = ord(contents[1])
             contents = contents[2:]
-            counted += 2
             descriptions += [Items.textual_description(item, count)]
-        print '%04X: %s' % (loc, ', '.join(descriptions))
+        corner = ['NW', 'NE', 'SW', 'SE'][loc >> 14]
+        loc_str = '%3d, %s corner' % ((loc & ~0xC000), corner)
+        print '%04X (%s): %s' % (loc, loc_str, ', '.join(descriptions))
+
+def describe_global_items(fname):
+    with open(fname, "rb") as f:
+        contents = f.read()
+    start = 0x6100
+    end = 0x6100 + struct.unpack('<H', contents[0xA038:0xA03A])[0]
+    describe_items(fname, start, end)
 
 class MonsterRecord:
     def __init__(self, contents):
@@ -812,7 +815,7 @@ if __name__ == '__main__':
     group = parser.add_argument_group(title='plus exactly one of the following actions').add_mutually_exclusive_group(required=True)
     group.add_argument('--dump', action='store_true', help='dump the file as hex')
     group.add_argument('--dump-range', type=str, metavar='1234:1238', help='dump just a portion of the file(s) as hex')
-    group.add_argument('--describe-items', action='store_true', help='list all items on the dungeon floor')
+    group.add_argument('--describe-global-items', action='store_true', help='describe all floor-items in the global list')
     group.add_argument('--describe-map', action='store_true', help='describe the current level')
     group.add_argument('--describe-monsters', action='store_true', help='list all tracked monsters')
     group.add_argument('--edit', action='store_true', help='make changes to the file (and save a backup if necessary)')
@@ -826,6 +829,7 @@ if __name__ == '__main__':
     parser.add_argument('--tail', type=str, default=None, help='address of a presumed record in the monster list')
     parser.add_argument('--art', action='store_true', help='dump as ASCII art instead of hex')
     parser.add_argument('--to-png', type=str, help='dump as PNG image instead of hex')
+    parser.add_argument('--items', action='store_true', help='dump as disassembled floor-items instead of hex')
     parser.add_argument('filename', nargs='+', help='File(s) to manipulate')
     options = parser.parse_args()
     options.edit = options.edit or any([
@@ -843,10 +847,13 @@ if __name__ == '__main__':
     elif options.dump_range:
         start, end = (int(x, 16) for x in options.dump_range.split(':'))
         for fname in options.filename:
-            dump_file(fname, start, end, by=options.by, art=options.art, to_png=options.to_png)
-    elif options.describe_items:
+            if options.items:
+                describe_items(fname, start, end)
+            else:
+                dump_file(fname, start, end, by=options.by, art=options.art, to_png=options.to_png)
+    elif options.describe_global_items:
         for fname in options.filename:
-            describe_items(fname)
+            describe_global_items(fname)
     elif options.describe_monsters:
         tail = int(options.tail, 16) if options.tail else None
         for fname in options.filename:
@@ -880,20 +887,14 @@ if __name__ == '__main__':
                     x = ord(contents[i+0])
                     y = ord(contents[i+1])
                     contents = contents[:i] + chr(x | 0x08) + chr(y) + contents[i+2:]
-                """
-                map_contents = ''
-                for y in range(31):
-                    for x in range(31):
-                        if y == 0:
-                            tile = ((x+1) << 8) + 0x07
-                            tile &= ~0x00C0  # remove monsters/items
-                            tile |= 0x0008  # add visibility
-                            map_contents += struct.pack('<H', tile)
-                        else:
-                            map_contents += '\x08\x00'
-                contents = contents[:0xA50A] + map_contents + contents[0xAC8C:]
-                contents = contents[:0x8022] + ('\0' * (0xA002-0x8022)) + contents[0xA002:] # kill monsters
-"""
+
+                #map_contents = ''
+                #for y in range(31):
+                #    for x in range(31):
+                #        map_contents += '\x08\x00'
+                #contents = contents[:0xA50A] + map_contents + contents[0xAC8C:]
+                #contents = contents[:0x8022] + ('\0' * (0xA002-0x8022)) + contents[0xA002:] # kill monsters
+
             if options.blank_range:
                 for r in options.blank_range.split(','):
                     start, end = (int(x, 16) for x in r.split(':'))
