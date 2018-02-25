@@ -19,10 +19,10 @@ def as_hex(s):
     return ' '.join('%02X' % ch for ch in s)
 
 def findbits(yeses, noes):
-    yes_bits_invariably_1 = [0xFF] * 0xF670
-    yes_bits_invariably_0 = [0xFF] * 0xF670
-    no_bits_invariably_1 = [0xFF] * 0xF670
-    no_bits_invariably_0 = [0xFF] * 0xF670
+    yes_bits_invariably_1 = [0xFF] * 0xE004 + [0x00] * (0xF670 - 0xE004)
+    yes_bits_invariably_0 = [0xFF] * 0xE004 + [0x00] * (0xF670 - 0xE004)
+    no_bits_invariably_1  = [0xFF] * 0xE004 + [0x00] * (0xF670 - 0xE004)
+    no_bits_invariably_0  = [0xFF] * 0xE004 + [0x00] * (0xF670 - 0xE004)
     for fname in yeses:
         with open(fname, "rb") as f:
             contents = f.read()

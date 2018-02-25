@@ -34,6 +34,14 @@ def as_pixel(s):
         elif ord(ch) < 0x100: result += '#'
     return result
 
+class DungeonTowers:
+    KEEP = 0
+    GRISSLEM = 1
+    SHASPUOK = 2
+    ANGRATH = 3
+    XTLALTIC = 4
+    ZENDIK = 5
+
 class Spells:
     ALL =      0xFFFFFFFF
     ARMOUR =   0x80000000
@@ -143,26 +151,27 @@ class Items:
 
     @staticmethod
     def is_stackable(item):
-        return any(
+        return any([
             Items.is_arrows(item),
             Items.is_common_key(item),
-        )
+        ])
 
     @staticmethod
     def is_chargeable(item):
-        return any(
+        return any([
             Items.is_torch(item),
             Items.is_magic_staff(item),
             Items.is_magic_wand(item),
             Items.is_magic_ring(item),
-        )
+        ])
 
     @staticmethod
     def is_unique(item):
-        return any(
+        return any([
             Items.is_talisman(item),
             Items.is_gem(item),
-        )
+            Items.is_backpack(item),
+        ])
 
     NONE                = 0x00
     LEATHER_CAP         = 0x01
@@ -339,7 +348,10 @@ class Items:
 
 class Inventory:
     def __init__(self, is_character_inventory, contents):
-        assert len(contents) == 32, 'Inventory data has odd length'
+        if is_character_inventory:
+            assert len(contents) == 32, 'Inventory data has odd length'
+        else:
+            assert len(contents) == 24, 'Inventory data has odd length'
         self.is_character_inventory = is_character_inventory
         self.items_ = [ord(contents[2*i]) for i in xrange(len(contents)/2)]
         self.counts_ = [ord(contents[2*i+1]) for i in xrange(len(contents)/2)]
@@ -537,17 +549,22 @@ class SaveGame:
         assert self.bytes_8000_8004 == '\xFC\xED\xDA\xCB'
         self.name = contents[0x8004:0x8021].rstrip('\x20')
         assert contents[0x8021] == '\0'
-        self.bytes_8022_A02C = contents[0x8022:0xA02C]
+        self.bytes_8022_A022 = contents[0x8022:0xA022]
         (
+            self.dungeon_tower,
+            self.dungeon_level,
+            self.bytes_A026_A02C,
             self.player_facing,
             self.player_position,
-            self.character_spells_selected,
+            self.character_spellbook_selected,
             self.character_inventory_selected,
-        ) = struct.unpack('<HHHH', contents[0xA02C:0xA034])
+        ) = struct.unpack('<HH6sHHHH', contents[0xA022:0xA034])
+        assert 0 <= self.dungeon_tower <= 5
+        assert 0 <= self.dungeon_level <= 7
         if self.character_inventory_selected == 0x81:
             self.character_inventory_selected = None
         assert self.character_inventory_selected in [None, 0, 1, 2, 3]
-        assert self.character_spells_selected in [0, 1, 2, 3]
+        assert 0 <= self.character_spellbook_selected <= 3
         self.bytes_A034_A03E = contents[0xA034:0xA03E]
         self.held_in_cursor = struct.unpack('<BB', contents[0xA03E:0xA040])
         self.bytes_A040_B0CC = contents[0xA040:0xB0CC]
@@ -559,9 +576,10 @@ class SaveGame:
         ]
         self.bytes_B274_B278 = contents[0xB274:0xB278]
         self.backpacks = [
-            Inventory(False, contents[0xB278:0xB298]),
-            Inventory(False, contents[0xB298:0xB2B8]),
-            Inventory(False, contents[0xB2B8:0xB2D8]),  # not sure if this is real
+            Inventory(False, contents[0xB278:0xB290]),
+            Inventory(False, contents[0xB290:0xB2A8]),
+            Inventory(False, contents[0xB2A8:0xB2C0]),
+            Inventory(False, contents[0xB2C0:0xB2D8]),
         ]
         self.bytes_B2D8_EE78 = contents[0xB2D8:0xEE78]
         self.thumbnail = contents[0xEE78:0xF670]
@@ -575,11 +593,14 @@ class SaveGame:
         contents += self.bytes_8000_8004
         contents += self.name.ljust(29, '\x20')
         contents += '\0'
-        contents += self.bytes_8022_A02C
-        contents += struct.pack('<HHHH',
+        contents += self.bytes_8022_A022
+        contents += struct.pack('<HH6sHHHH',
+            self.dungeon_tower,
+            self.dungeon_level,
+            self.bytes_A026_A02C,
             self.player_facing,
             self.player_position,
-            self.character_spells_selected,
+            self.character_spellbook_selected,
             0x81 if self.character_inventory_selected is None else self.character_inventory_selected,
         )
         contents += self.bytes_A034_A03E
@@ -653,11 +674,11 @@ class SaveGame:
         if Items.is_unique(item):
             for character in self.characters:
                 for slot in range(6, 16):
-                    if character.inventory[slot][0] == item:
+                    if character.inventory[slot] == (item, count):
                         return
             for packno in self.accessible_backpacks():
                 for slot in range(0, 16):
-                    if self.backpacks[packno][slot][0] == item:
+                    if self.backpacks[packno][slot] == (item, count):
                         return
         # Look for an empty slot in a character's main inventory, or in a backpack.
         for character in self.characters:

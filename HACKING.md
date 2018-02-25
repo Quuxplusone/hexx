@@ -33,10 +33,10 @@ that same tile. (But remember that these will appear in the file as "BC 1A" and 
 
 0758 = "58 x7"
 
-Facing is stored as a 2-byte little-endian quantity. 0000 is due south, 0040 is due west, 0080 is
-due north, and 00C0 is due east. Then it wraps around and keeps going; it actually tracks how many
-full rotations you've made, so that 1234 is a valid facing and means "west-south-west, having netted
-exactly 18 rightward full rotations over the course of the game."
+The player's facing is stored as a 2-byte little-endian quantity. 0000 is due south, 0040 is due west,
+0080 is due north, and 00C0 is due east. Then it wraps around and keeps going; it actually tracks
+how many full rotations you've made, so that 1234 is a valid facing and means "west-south-west,
+having netted exactly 18 rightward full rotations over the course of the game."
 
 Spell knowledge is encoded as a 32-bit bitfield. For example, if you know the first spell in each
 of the four schools of magic, that's "80 80 80 80". If you know all of the Earth (Green) spells,
@@ -60,8 +60,11 @@ Offsets [0x8004 .. 0x8022) hold the name of the savegame as 29 bytes of space-pa
 Offsets [0x8022 .. 0xA022) memory-mapped heap of monster records (32 bytes each)
 - Offsets 0,1 store the "next record" pointer, as an offset into [0x8000 .. 0xA000). The special value "FF FF" means "done."
 - ???
-Offsets [0xA022 .. 0xA02E) ??? 10 bytes
-Offsets [0xA02C .. 0xA02E) define the player's facing. (But modifying this is deadly.)
+
+Offsets [0xA022 .. 0xA024) defines the current dungeon tower (0=Keep, 1=Grisslem, etc).
+Offsets [0xA024 .. 0xA026) defines the current dungeon level within the tower (0 through 7).
+Offsets [0xA026 .. 0xA02C) ??? 6 bytes
+Offsets [0xA02C .. 0xA02E) define the player's facing.
 Offsets [0xA02E .. 0xA030) define the player's location. (But modifying this is deadly.)
 Offsets [0xA030 .. 0xA032) define the character whose spells are visible (0..3).
 Offsets [0xA032 .. 0xA034) define the highlighted character (0..3, or 0x81 for "none").
@@ -81,6 +84,8 @@ Bits 0101 indicate a wall decoration of some kind.
 
 The banner designs are not controllable; they cycle based on (x,y) coordinates.
 The obelisk/brazier designs are not controllable; they cycle every 4x4 tiles.
+
+Offsets [0xAC8C .. 0xB0CC) is 1088 bytes
 
 
 Offsets [0xB0CC .. 0xB136) define the front-left character (106 bytes):
@@ -123,9 +128,11 @@ Offsets [0xB20A .. 0xB274) define the rear-right character (106 bytes).
 
 Offsets [0xB274 .. 0xB278) ??? 4 bytes of zeros
 
-Offsets [0xB278 .. 0xB298) define the contents of backpack 0x00 (found just after "FAST ROUTE DOWN").
-Offsets [0xB298 .. 0xB2B8) define the contents of backpack 0x01 (found in the Tower of Grisslem).
-Offsets [0xB2B8 .. 0xB2D8) define the contents of backpack 0x02 (probably???)
+There are four backpacks in the game, each with 12 inventory slots.
+Offsets [0xB278 .. 0xB290) define the contents of backpack 0x00 (found just after "FAST ROUTE DOWN").
+Offsets [0xB290 .. 0xB2A8) define the contents of backpack 0x01 (found in the Tower of Grisslem).
+Offsets [0xB2A8 .. 0xB2C0) define the contents of backpack 0x02 ().
+Offsets [0xB2C0 .. 0xB2D8) define the contents of backpack 0x03 ().
 
 Offsets [0xB2D8 .. 0xE004) ??? 11564 bytes
 
