@@ -85,7 +85,7 @@ This comes partly from the manual (spell names and schools) and partly from expe
 ### Yellow Spells (Chaos Magic)
 - Deflect (100 GP)
 - Terror (100 GP)
-- Antimage
+- Antimage (300 GP)
 - Regen
 - Ethblade
 - Spelltap
@@ -99,8 +99,8 @@ This comes partly from the manual (spell names and schools) and partly from expe
 - Dispell (300 GP)
 - Fireball
 - Firepath
-- Recharge
-- Inferno
+- Recharge (500 GP)
+- Inferno (700 GP)
 
 ### Purple Spells (Night Magic)
 - Confuse (100 GP)
@@ -121,6 +121,8 @@ Most items can be ignored and sold off for cash (to buy spells), but the followi
 - Power Potion (increases SP above maximum, to enable learning spells whose starting SP cost is too high)
 - Dragon Ale (increases INT by 1)
 - Orc's Vomit (increases STR by 1)
+- Cloud Amulet (???)
+- Serpent Amulet (increases STR by 5 when worn)
 
 
 Walkthrough
@@ -178,7 +180,6 @@ Sleep. When you wake up, all your characters will be at Level 2. This is a boost
 Check your hunger levels and eat if needed.
 Make sure the correct battle spells are selected in your spellbook.
 
-==HERE== (saved #1, with 16 common keys)
 This sign says, "TURN THE BLOCK TO TURN THE BLOCK".
 Open the next grated door. Kill the orc.
 This is your first puzzle! The goal is to access the green dot so you can proceed.
@@ -226,7 +227,6 @@ Open the blue door with the crystal key. Kill the mage, orc, and knight. (Challe
 Open the wooden door with a common key.
 Open either of the double wooden doors. Kill the skaven.
 The sign says, "FAST ROUTE DOWN".
-==HERE== (saved #2)
 Before you go down here, find a bed and level up to Level 3.
 (Beware of key loss! You need at least 2 common keys!)
 Jump down the pit and look out! Kill two bluebints, the mage, and the skaven.
@@ -340,7 +340,6 @@ Open the blue door to the Tower of Grisslem using the serpent key.
 Open the grated door to your left. (Collect 20 elf arrows.)
 Open the wooden door. (Collect a blue n'egg, moon elixir, phoenix broth, full helm.)
 You are now ready to tackle the Tower of Grisslem!
-==HERE== (saved #3, with 13 common keys)
 
 
 Area 5: The Tower of Grisslem, Left Branch
@@ -393,7 +392,6 @@ Open the wooden door. Collect the serpent key.
 Descend the stairs. Open the purple door. Kill the lizardman.
 Open the grated door.
 Open the grated door. Kill the redbint. (Collect iron boots.)
-==HERE== (saved #5)
 Click the yellow dot to vanish a wall to your right. Kill the dwarf. Collect the ruby key (and 10 arrows).
 Go back up the stairs.
 (Ascend the stairs. Click the purple dot. This vanishes the pillar in front of you, creating a shortcut.)
@@ -445,7 +443,7 @@ Step on the portal plate to your south. This vanishes a pillar in an alcove west
 (Collect a green n'egg and a Chymera Blood.)
 Visit the alcove to your west. Collect the serpent key.
 Go back out past the regen chamber and straight ahead.
-(Open the wooden door with a common key. Kill two dwarves. Collect the fire gem.)
+Open the wooden door with a common key. Kill two dwarves. Collect the fire gem. (Collect 10 elf arrows.)
 Go back to the down-stairs; face north. Open the right-hand grated door with the serpent key. Kill two dwarves.
 Follow the hall around and take the right branch when it forks.
 The right fork dead-ends. The sign says, "LOOK BEHIND YOU". Turn around! Kill the dwarf.
@@ -463,7 +461,6 @@ Open the grated door. Open the wooden door. (Collect cheese and Hedjog Venom.)
 Turn right. Click the blue square. This vanishes a wall to your left, making a shortcut.
 Don't take the shortcut. Instead, turn right and go south.
 Open the wooden door with a common key.
-==HERE== (saved #4 with 8 common keys)
 Open the wooden door. Kill the mage. (This is a big mazey area and can flip your orientation. Seek the mage carefully.)
 Collect the gold key.
 Open either wooden door to the west. Kill the lizardman and the dwarf. (Collect a scroll of renew.)
@@ -499,7 +496,7 @@ Make a U-turn and ascend. (This area is empty. Collect a scroll of vivify and a 
 Go to the northwest corner of this area. Click the purple dot. This vanishes the pillar that appeared behind you when you arrived.
 Descend again. Go forward and ascend.
 (Collect a snake staff.)
-(Touching the green Eye on the wall seems intended to start a cutscene, but in DOSBox this crashes the game!)
+(Take the green Eye from the wall. This should start a cutscene. If it doesn't, download WIZ.COM and try again.)
 Getting close to the pillar on your left will vanish it. Look out! Kill three lizardmen and a skeleton.
 Getting close to the northwest corner of the map will vanish the brazier on the right. Look out! Kill four lizardmen, a death knight, a skeleton, and a skaven.
 Explore this area.
@@ -520,7 +517,7 @@ Open the grated door to the right of the sign. Kill the death knight, the mage, 
 Turn left. Open the purple door with the crystal key. Collect the silver key.
 (Open the wooden door. Collect a battle axe.)
 Open the grated door with the silver key. Kill the death knight.
-Open the purple door. There are two pits here. Jump into the left pit.
+Open the purple door. There are two pits here. Jump into either pit. (They go the same place.)
 (Collect mithril gloves, moon elixir, yellow n'egg.)
 Visit the bed and level up to Level 6.
 Open the grated door.
@@ -547,3 +544,65 @@ Step on that plate, and so on, creating a pathway of plates. The last plate you 
 Go back north and through the gap you just created.
 Open the purple door with the serpent key. Kill the frogman. (Collect a sun staff and a moon elixir.)
 Click the blue dot. This vanishes a wall to your left. You've been here before!
+Go through the gap. Ascend.
+Make a U-turn and ascend again.
+Turn right. Find the purple door.
+Open the purple door. Go in, turn right, and jump in the pit.
+Check the map. Follow around to the two pits on this level. Jump in either one.
+Find the downstairs (on tower level 6) and descend.
+Find the downstairs (on tower level 5) and descend.
+The sign says, "THOSE WHO SEEK THE EYE SHALL PERISH".
+Face the sign. Behind you is a door. Go through it and turn right.
+Jump in the pit.
+Jump in the next pit; fall two levels.
+You're back at the entrance to the Tower of Grisslem!
+Take the portal plate back to the Keep.
+Go back to Ye Armoury and sell all your trade goods!
+
+
+Area 7: The Demesne of Shaspuok
+-------------------------------
+Find the up-stairs in the southeast corner of Keep Level 4. Ascend.
+Go straight forward. Ascend.
+Turn left and go to the room with the slots on the walls.
+Place the Eye of Grisslem in the appropriate slot!
+(This will bring up an antipiracy screen. Use hexx-manual.pdf to answer the questions.)
+The grated door to your west has opened.
+Go through. Turn left.
+Open the wooden door. Kill the orc and the mage.
+Collect the night key (and two n'eggs).
+Go back down the stairs, straight, and down again.
+Go around to the right and find the door to the Demesne of Shaspuok.
+Open Shaspuok's blue door with the night key.
+Open the grated door. (Collect 20 elf arrows and two n'eggs.)
+Go back out the grated door. Step on the portal plate. This area is empty.
+Ahead of you are two up-stairs. (They go the same place.)
+Ascend either staircase. Kill two cyclopses and two mages.
+(This big room has two shops and a regen chamber.)
+==HERE== (saved 1-J.sav)
+To the north are some illusory walls hiding a sign that says "PARTING IS SUCH SWEET SORROW" and two gem slots.
+Place the moon gem in the slot.
+Open the blue door. This area is empty.
+Open the grated door. Kill the mage and two skavens. (Collect a scroll of levitate.)
+Open the blue door straight ahead. Kill two valkyries. (Collect 10 elf arrows.)
+Open the wooden door with a common key. Kill the knight. (Collect mithril gloves.)
+Go back out to the east-facing wooden door you haven't opened yet.
+Open the wooden door. This area is empty.
+Open the blue door. Kill the mage.
+Go straight. Open the blue door.
+(Turn left. Open the blue door. This leads to the slot for the fire gem.)
+Open the grated door to the south. Kill the viking.
+Open the blue door. Kill two vikings and two valkyries. (Collect an apple and a moon elixir.)
+Open the west-facing wooden door with a common key. Kill the cyclops. (Collect 10 elf arrows and a long bow.)
+(Open the north-facing wooden door. Collect 10 arrows.)
+Find the east-facing wooden door at the north end of the level.
+Open the wooden door with a common key. (Collect a battle axe and a corn.)
+Ascend. (Collect a Hedjog Venom and a drumstick.)
+The sign says, "FOR THE FIRST YOU RISE / FOR THE SECOND BE WISE".
+Face the sign; turn around. Open the blue door.
+This is a puzzle!
+
+The two pits in front of you deposit you right back at the bottom of the tower. You must cross both of them cleverly.
+For the first pit, use Suspend or Levitate, or sneakily step diagonally.
+Crossing the center line of the room will flip your orientation and fizzle all your spells.
+Step diagonally past the second pit. Step on the portal plate. The pit vanishes.

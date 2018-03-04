@@ -13,6 +13,10 @@ For torches, the second byte should be set to the remaining life of the torch (b
 For backpacks, the second byte should be set to the "backpack number" (see below).
 For empty slots, both bytes should be set to "0x00".
 
+Each "shop item" is encoded in a single byte, for the item type. There is no "quantity" byte; instead,
+all stackable items are available in infinite quantities, and otherwise there's an implicit quantity of "1".
+Each shop contains a maximum of 7x4x2 = 56 items.
+
 Locations are encoded as 2-byte little-endian quantities. Each square of the dungeon map is divided
 into four quadrants for the purposes of item location. The quadrants (northwest being upper left)
 are encoded in the high-order 2 bits of the little-endian quantity:
@@ -47,14 +51,7 @@ that's "FF 00 00 00".
 
 Offsets [0x0000 .. 0x6100) ??? 24832 bytes
 
-Offsets [0x6100 .. 0x8000) memory-mapped heap of floor-item records
-- Offsets 0,1 define the location of the object in the dungeon.
-- Offset 2 defines the length of this record in bytes (i.e., this byte must be at least 06).
-- Offset 3 is invariably zero.
-- Offsets 4,5 define the first item at this location; offsets 6,7 define the second item, and so on.
-However, there's some funny business occasionally. I think this is a memory-mapped data structure of some sort,
-and contains occasional garbage bytes in the interstices.
-
+Offsets [0x6100 .. 0x8000) define the floor-items on all levels EXCEPT the current level; see offset 0xA038 for details
 
 Offsets [0x8000 .. 0x8004) ??? 4 bytes "FC ED DA CB"
 Offsets [0x8004 .. 0x8022) hold the name of the savegame as 29 bytes of space-padded ASCII plus a null terminator.
@@ -76,7 +73,20 @@ Offsets [0xA03A .. 0xA03C) is a pointer `p` where `0x8000 + p` is the head of th
 Offsets [0xA03C .. 0xA03E) is a pointer `p` where `0x8000 + p` is 32 bytes past the tail of the monster list.
 Offsets [0xA03E .. 0xA040) define the item "held in the cursor."
 
-Offsets [0xA040 .. 0xB0CC) ??? 4236 bytes
+
+Offsets [0xA040 .. 0xA064) ??? 36 bytes
+
+
+Offsets [0xA064 .. 0xA09C) define the items for sale in Ye Shoppe, one byte apiece. (7 per row x 4 rows x 2 pages = 56 bytes.)
+Offsets [0xA09C .. 0xA0D4) define the items for sale in Ozzrik's
+Offsets [0xA0D4 .. 0xA10C) define the items for sale in Ye Armoury.
+Offsets [0xA10C .. 0xA144) define the items for sale in the Grog Shop.
+Offsets [0xA144 .. 0xA17C) define the items for sale in the south shop in Shaspuok's tower.
+Offsets [0xA17C .. 0xA1B4) define the items for sale in the north shop in Shaspuok's tower.
+
+
+Offsets [0xA1B4 .. 0xA50A) ??? 854 bytes
+
 
 Offsets [0xA50A .. 0xAC8C) define map data for the current level (up to 31x31x2 bytes).
 Each dungeon tile is represented by a 2-byte little-endian value.
@@ -146,6 +156,8 @@ Offsets [0xB2F4 .. 0xB2F6) define the number of bytes in the floor-item-list tha
   is written back into the compressed global data, which means that the items disappear from there too, forever.
 - Blanking the global data will NOT affect the items on the current level, but it can make the game crash when
   you change levels and the game tries to load items from global that aren't there anymore.
+
+Offsets [0xC2F6 .. 0xDB6A) look like maybe monster records???
 
 
 Offsets [0xE004 .. 0xE1E8) are the front-left character's big thumbnail, as a 256-color 22x22 bitmap.

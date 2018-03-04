@@ -173,6 +173,17 @@ class Items:
             Items.is_backpack(item),
         ])
 
+    @staticmethod
+    def is_stackable_in_shops(item):
+        return any(
+            Items.is_arrows(item),
+            Items.is_scroll(item),
+            Items.is_potion(item),
+            Items.is_food(item),
+            Items.is_common_key(item),
+            Items.is_torch(item),
+        )
+
     NONE                = 0x00
     LEATHER_CAP         = 0x01
     HELM                = 0x02
@@ -344,6 +355,39 @@ class Items:
         elif count != 1:
             result += ' (%d)' % count
         return result
+
+    @staticmethod
+    def price(item):
+        prices = [
+            -1, 20, 50, 100, 300, 500, 600, 700, 800, 1000,
+            35, 75, 250, 600, 750, 950, 800, 900, 1000, 1000, 1500,
+            25, 75, 200, 300, 400, 450, 500,
+            30, 90, 150, 250, 350, 450, 500, 600, 700, 800, 900, 950, 1000,
+            28, 125, 250, 400, 500, 750,
+            2550, 2535, 2550, 2575, 2550, 2525, 9500,
+            10, 500, 600, 750,
+            35, 100, 300, 450, 700, 800, 900, 1000, 1200,
+            235, 500, 650, 800, 900, 1000, 1200,
+            100, 1000,
+            -1, -1, -1, -1,
+            100, 300, 600, 1000, 1200,
+            10, 30, 200,
+            550, 635, 650, 575, 450, 525,
+            350, 335, 355, 375, 365, 325,
+            150, 125, 155, 175, 165, 145, 120,
+            55, 100, 25, 75, 45, 20, 15, 40, 20, 30, 50,
+            10, 100, 20, 25, 500, 100, 500,
+            2, 2, 2, 2, 2, 2, 4, 8, 12, 16, 20,
+            -1, -1, -1, -1, -1, -1, -1, 10,
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, 10, 10, -1,
+            # This concludes the meaningful items. After this point
+            # the items get arbitrary prices presumably due to
+            # buffer overflows in the game binary itself.
+        ]
+        assert len(prices) == Items.BAG_OF_GOLD + 1
+        if item in range(len(prices)):
+            return prices[item] & 65535
+        return None
 
 
 class Inventory:
@@ -541,6 +585,21 @@ class Character:
         self.spells &= ~which
 
 
+class Shop:
+    def __init__(self, contents):
+        assert len(contents) == 56, 'Shop data has the wrong length'
+        self.items_ = [ord(ch) for ch in contents]
+
+    def __setitem__(self, index, item):
+        self.items_[index] = item
+
+    def __getitem__(self, index):
+        return self.items_[index]
+
+    def dumps(self):
+        return ''.join(chr(k) for k in self.items_)
+
+
 class SaveGame:
     def __init__(self, contents):
         assert len(contents) == 0xF670, 'Savefile has the wrong length'
@@ -567,7 +626,16 @@ class SaveGame:
         assert 0 <= self.character_spellbook_selected <= 3
         self.bytes_A034_A03E = contents[0xA034:0xA03E]
         self.held_in_cursor = struct.unpack('<BB', contents[0xA03E:0xA040])
-        self.bytes_A040_B0CC = contents[0xA040:0xB0CC]
+        self.bytes_A040_A064 = contents[0xA040:0xA064]
+        self.shops = [
+            Shop(contents[0xA064:0xA09C]),  # Ye Shoppe
+            Shop(contents[0xA09C:0xA0D4]),  # Ozzrik's
+            Shop(contents[0xA0D4:0xA10C]),  # Ye Armoury
+            Shop(contents[0xA10C:0xA144]),  # Grog Shop
+            Shop(contents[0xA144:0xA17C]),  # We Sell The Best (South)
+            Shop(contents[0xA17C:0xA1B4]),  # We Sell The Best (North)
+        ]
+        self.bytes_A1B4_B0CC = contents[0xA1B4:0xB0CC]
         self.characters = [
             Character(0, contents[0xB0CC:0xB136]),
             Character(1, contents[0xB136:0xB1A0]),
@@ -605,7 +673,10 @@ class SaveGame:
         )
         contents += self.bytes_A034_A03E
         contents += ''.join(map(chr, self.held_in_cursor))
-        contents += self.bytes_A040_B0CC
+        contents += self.bytes_A040_A064
+        for shop in self.shops:
+            contents += shop.dumps()
+        contents += self.bytes_A1B4_B0CC
         for character in self.characters:
             contents += character.dumps()
         contents += self.bytes_B274_B278
@@ -635,8 +706,7 @@ class SaveGame:
             packs = newpacks
             newpacks = set()
             for packno in packs:
-                for slot in range(0, 16):
-                    item, count = self.backpacks[packno][slot]
+                for item, count in self.backpacks[packno]:
                     if item == Items.BACKPACK:
                         newpacks.add(count)
         return sorted(packs)
@@ -741,6 +811,13 @@ def describe_global_items(fname):
     end = 0x6100 + struct.unpack('<H', contents[0xA038:0xA03A])[0]
     describe_items(fname, start, end)
 
+def describe_local_items(fname):
+    with open(fname, "rb") as f:
+        contents = f.read()
+    start = 0xB2F6
+    end = 0xB2F6 + struct.unpack('<H', contents[0xB2F4:0xB2F6])[0]
+    describe_items(fname, start, end)
+
 class MonsterRecord:
     def __init__(self, contents):
         self.contents = contents
@@ -816,6 +893,7 @@ if __name__ == '__main__':
     group.add_argument('--dump', action='store_true', help='dump the file as hex')
     group.add_argument('--dump-range', type=str, metavar='1234:1238', help='dump just a portion of the file(s) as hex')
     group.add_argument('--describe-global-items', action='store_true', help='describe all floor-items in the global list')
+    group.add_argument('--describe-local-items', action='store_true', help='describe all floor-items on the current level')
     group.add_argument('--describe-map', action='store_true', help='describe the current level')
     group.add_argument('--describe-monsters', action='store_true', help='list all tracked monsters')
     group.add_argument('--edit', action='store_true', help='make changes to the file (and save a backup if necessary)')
@@ -854,6 +932,9 @@ if __name__ == '__main__':
     elif options.describe_global_items:
         for fname in options.filename:
             describe_global_items(fname)
+    elif options.describe_local_items:
+        for fname in options.filename:
+            describe_local_items(fname)
     elif options.describe_monsters:
         tail = int(options.tail, 16) if options.tail else None
         for fname in options.filename:
