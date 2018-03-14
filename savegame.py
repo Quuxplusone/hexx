@@ -861,6 +861,8 @@ def describe_map(fname):
     with open(fname, "rb") as f:
         contents = f.read()
     def glyphfor(tile):
+        if tile & 0x0040:
+            return ' !!!!'
         tile &= ~0x0008  # remove map-visibility bit
         if (tile & 0x0001) == 0:  # if it is passable...
             tile &= ~0x0080  # remove monster bit
@@ -873,6 +875,8 @@ def describe_map(fname):
             return '  <> '
         elif (tile == 0x0003):
             return ' BED_'
+        elif (tile == 0x2A06):
+            return ' REGE'
         else:
             return ' %04X' % (tile & 0xFFFF)
         if (tile & 0x0001):
@@ -880,8 +884,10 @@ def describe_map(fname):
         else:
             return '.'
     total_tiles = []
-    for y in range(14):
-        tiles = struct.unpack('<14H', contents[0xA50A + 2*14*y : 0xA50A + 2*14*(y+1)])
+    map_width = 17
+    map_height = 17
+    for y in range(map_height):
+        tiles = struct.unpack('<' + str(map_width) + 'H', contents[0xA50A + 2*map_width*y : 0xA50A + 2*map_width*(y+1)])
         print ''.join(glyphfor(tile) for tile in tiles)
         total_tiles += list(glyphfor(tile) for tile in tiles)
     for t in sorted(set(total_tiles)):
@@ -965,9 +971,9 @@ if __name__ == '__main__':
             contents = sg.dumps()
             if options.reveal_map:
                 for i in range(0xA50A, 0xAC8C, 2):
-                    x = ord(contents[i+0])
-                    y = ord(contents[i+1])
-                    contents = contents[:i] + chr(x | 0x08) + chr(y) + contents[i+2:]
+                    tile, = struct.unpack('<H', contents[i:i+2])
+                    tile |= 0x0008
+                    contents = contents[:i] + struct.pack('<H', tile) + contents[i+2:]
 
                 #map_contents = ''
                 #for y in range(31):

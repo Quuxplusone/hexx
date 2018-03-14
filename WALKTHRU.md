@@ -86,7 +86,7 @@ This comes partly from the manual (spell names and schools) and partly from expe
 - Deflect (100 GP)
 - Terror (100 GP)
 - Antimage (300 GP)
-- Regen
+- Regen (400 GP)
 - Ethblade
 - Spelltap
 - Vivify
@@ -123,6 +123,8 @@ Most items can be ignored and sold off for cash (to buy spells), but the followi
 - Orc's Vomit (increases STR by 1)
 - Cloud Amulet (???)
 - Serpent Amulet (increases STR by 5 when worn)
+- Night Amulet (increases DEX by 5 when worn)
+- Dragon Amulet (increases CON by 5 when worn)
 
 
 Walkthrough
@@ -408,7 +410,7 @@ Go back out, face north, and open the purple door with the sun key.
 Open the grated door.
 Open the wooden door. The sign says, "THE CRYSTALS CAGE THE POWER". (Collect an Orc's Vomit.)
 Open the purple door. Kill the viking and the greenbint. Collect the gold key (and corn, scroll of trueview).
-This room has two beds, and you've just hit 25,000 XP. Sleep to level up to Level 5!
+This room has two beds, and you've just hit 25,000 XP. Visit the bed and level up to Level 5!
 To your south is a hallway with green squares at both ends. (Crossing the midpoint flips your orientation.)
 Click either green square to temporarily vanish the wall south of the midpoint. Go south.
 (The purple door to your left requires a silver key.)
@@ -496,7 +498,7 @@ Make a U-turn and ascend. (This area is empty. Collect a scroll of vivify and a 
 Go to the northwest corner of this area. Click the purple dot. This vanishes the pillar that appeared behind you when you arrived.
 Descend again. Go forward and ascend.
 (Collect a snake staff.)
-(Take the green Eye from the wall. This should start a cutscene. If it doesn't, download WIZ.COM and try again.)
+Take the green Eye from the wall. (This should start a cutscene. If it doesn't, download WIZ.COM and try again.)
 Getting close to the pillar on your left will vanish it. Look out! Kill three lizardmen and a skeleton.
 Getting close to the northwest corner of the map will vanish the brazier on the right. Look out! Kill four lizardmen, a death knight, a skeleton, and a skaven.
 Explore this area.
@@ -579,8 +581,8 @@ Go back out the grated door. Step on the portal plate. This area is empty.
 Ahead of you are two up-stairs. (They go the same place.)
 Ascend either staircase. Kill two cyclopses and two mages.
 (This big room has two shops and a regen chamber.)
-==HERE== (saved 1-J.sav)
-To the north are some illusory walls hiding a sign that says "PARTING IS SUCH SWEET SORROW" and two gem slots.
+To the south are some illusory walls hiding a sign that says "PARTING IS SUCH SWEET SORROW" and two gem slots.
+(Collect a cloud staff in front of the sign.)
 Place the moon gem in the slot.
 Open the blue door. This area is empty.
 Open the grated door. Kill the mage and two skavens. (Collect a scroll of levitate.)
@@ -600,9 +602,371 @@ Open the wooden door with a common key. (Collect a battle axe and a corn.)
 Ascend. (Collect a Hedjog Venom and a drumstick.)
 The sign says, "FOR THE FIRST YOU RISE / FOR THE SECOND BE WISE".
 Face the sign; turn around. Open the blue door.
-This is a puzzle!
 
+This is a puzzle!
 The two pits in front of you deposit you right back at the bottom of the tower. You must cross both of them cleverly.
 For the first pit, use Suspend or Levitate, or sneakily step diagonally.
-Crossing the center line of the room will flip your orientation and fizzle all your spells.
-Step diagonally past the second pit. Step on the portal plate. The pit vanishes.
+Crossing the center line of the room will flip your orientation and fizzle all your spells. Watch your compass closely!
+Here is the intended solution to the second-pit puzzle:
+- Step onto, but not across, the west plate.
+- Step across the east plate.
+- Follow around the loop. Step onto the (northeast) plate.
+- Retrace your steps; step across the east plate; then step onto it again, so you've hit it an odd number of times.
+- Step across the west plate. (Watch your compass!)
+- Step across the northwest plate to vanish the second pit.
+Alternatively, you can just step diagonally past the pit and step on the northwest plate immediately.
+
+Open the blue door. Kill the viking.
+Go all the way around to the right.
+The sign says, "THE RINGS WERE MADE FROM THE SHARDS OF PUREST CRYSTALS".
+Open either grated door. Kill two valkyries.
+Collect a night ring, a mithril boots, and a serpent key.
+Come back around. (Open the wooden door. Collect 10 arrows.)
+Visit a bed and level up to Level 7!
+Continue to the west end of the hall.
+Open the grated door with the serpent key. Kill the mage and the skeleton.
+Open the grated door. Kill the knight.
+Open the blue door. (This area is empty. Watch out for the pit!)
+Sneak the gold key diagonally from behind the pit.
+Open either grated door in this area. Kill the mage.
+Open the blue door with the gold key. Bear west and south.
+(The grated door here requires a silver key.)
+Open the wooden door. Collect the serpent key (and bread).
+Go north and west.
+Open the south-facing wooden door. (Collect a mithril plate.)
+Open the blue door with the serpent key. Kill four monsters. Collect the silver key (and a cheese).
+Go out and out and bear right to the grated door.
+Open the grated door with the silver key. Kill the skeleton and the viking.
+Open the wooden door with a common key. Kill the mage. (Collect a Hedjog Venom.)
+Very subtly, almost behind the pillar, there is a night key! Collect the night key.
+Go out and out and immediately make a U-turn around to the right.
+Open the wooden door with a common key. Kill the skeleton and the viking.
+(Behind the wooden door in front of you is only a bed.)
+Go right.
+(Open the south-facing wooden door. Collect a mithril axe.)
+(Collect a scroll of antimage.)
+Open the grated door with the night key. (Collect a Chymera Blood.)
+Ascend either staircase.
+Beware: This entire level is anti-magic! All your combat spells will fizzle.
+
+Go right cautiously! Kill eight monsters: viking, knight, valkyrie, valkyrie, shrek, dwarf, valkyrie, viking.
+At the end of the right-hand passage is a grated door.
+Open the grated door. Collect the night key and the third backpack.
+(Also collect a scroll of renew and a Dragon Ale.)
+Retrace your steps.
+(Open the wooden door with a common key. Collect 20 elf arrows and a cheese.)
+Go back past the down-stairs.
+The sign says, "BEWARE THE PSYCHIC BARRIERS".
+This is another puzzle!
+
+          _
+        _ B X X a
+        X * * X *
+        b X F * *
+        * A * X X
+      _ o * * * o
+              *
+
+    o - obelisk
+    * - safe path
+    F - flip orientation but otherwise safe
+    X - teleport back to entrance
+    A - teleport back to entrance
+    B - teleport back to entrance
+    a - plate replacing 'A' with '*'
+    b - plate replacing 'B' with '*'
+
+Step on plate 'a' to eliminate teleport 'A', or alternatively sneak diagonally past the obelisk.
+Step on plate 'b' to eliminate teleport 'B'.
+Go out the north exit.
+(Your spells will work again here!)
+Open the blue door with the night key. Kill the shrek and the dwarf.
+Bear left. Open the wooden door with a common key. Kill the mage and the purplebint.
+Collect the gold key.
+(Open the wooden door. Kill the knight and the death knight. Collect a scroll of fireward.)
+Open the grated door with the gold key.
+Open the wooden door. Collect the serpent key (and a cloud wand).
+Open the blue door with the serpent key. Kill the mage and the cyclops.
+(Collect an apple, 10 arrows, and a night amulet.)
+Follow the right-hand wall. Open the wooden door.
+The sign says, "RUN THE GAUNTLET!"
+Stepping on the first plate releases a dwarf. Kill it. (Collect a power potion.)
+Stepping on the next plate releases a purplebint. Kill it. (Collect a bread.)
+In the purplebint's niche, there is a very subtle button. Click it to open the door at the end of this gauntlet.
+Stepping on the next plate releases a death knight. Kill it. (Collect a golden helm.)
+Stepping on the last plate releases a knight. Kill it.
+(If the blue door is still closed, check the map for the purplebint's button.)
+(Collect a yellow n'egg.)
+Ascend.
+Crossing the midpoint of this room flips your orientation.
+To the west, behind the wooden door, is a regen chamber.
+To the east, behind the wooden door, is a room with a pit and two portal plates.
+Step on the left-hand portal plate to teleport behind the west grated door (which will not budge).
+Open the wooden door.
+Open the next wooden door. Collect the ruby key (and a corn).
+Open the blue door with the ruby key. Kill two skeletons.
+Collect the gold key (and a cloud ring).
+Go back out to the grated door.
+Open the grated door. Kill eight monsters. Collect the sun key (and a scroll of suspend).
+(Open the wooden door to your right. It's just a bed.)
+Visit a bed and level up to Level 8!
+Open the blue door with the sun key.
+Open the grated door with the gold key.
+Open the wooden door. Kill the cyclops. (Collect a chymera blood and a night wand.)
+At the end of this area, collect the night key (and a Heron Blade and an Orc's Vomit).
+Click the red square to (???).
+Retrace your steps. Open the wooden door.
+Open the blue door with the night key.
+(The grated door will not budge.)
+Open the first wooden door. Collect the serpent key (and blood leathers).
+The sign here says, "THE GREAT BEAST DID COME FROM THE OTHER WORLD".
+Open the second wooden door. Kill the mage. (Collect moon elixir, scroll of vivify.)
+Go to the northeast corner of the map.
+Open the grated door with the serpent key. (Collect a biscuit.)
+Ascend.
+Open the grated door. Kill the cyclops and two shreks.
+The sign says, "LOOK AND THOU SHALT SEE".
+(This area is full of illusory walls, and many invisible traps that cancel Trueview.)
+Collect the silver key (and a battle staff, Hedjog Venom, yellow n'egg).
+Click the red square on the north side of the room.
+Click the red square on the south side of the room.
+Go west. Open the left-hand blue door.
+Open the grated door with the silver key. Go straight. Collect the gold key (and Hedjog Venom).
+(Collect an elven chain from the other branch of this area.)
+Go back out. Make a U-turn around to the left.
+Open the right-hand blue door with the gold key.
+(Collect a bane shield and 10 elf arrows.)
+Open either of the wooden double doors here. Kill five monsters. Find and kill the roundhead.
+Collect the silver key.
+Open the blue door with the silver key. Kill the valkyrie.
+Collect the night key.
+Open the grated door. Kill the valkyrie. (Collect Dragon Doom, and a bread.)
+(Behind the west-facing wooden door in the south part of the level is a Stealth Blade.)
+Ascend.
+Open the grated door with the night key.
+Bear right. Open the blue door. Kill the cyclops, valkyrie, and minotaur.
+(Collect a Chymera Blood.)
+Go back out and around to the right.
+Open the blue door. Kill the cyclops, valkyrie, and mage.
+Click the blue button and the green square. (This vanishes obelisks between the two rooms you just cleared.)
+Go back into the room you just cleared. (More illusory walls.)
+Collect a Power Staff.
+Take the purple Tear from the wall. (This should start a cutscene. If it doesn't, download WIZ.COM and try again.)
+Descend the way you came up.
+Veer around to the left. Find the down-stairs on level 6. Jump in the pit opposite the stairs.
+Descend the down-stairs in front of you.
+Bear right, past the gauntlet. Turn right. Find the down-stairs on this level.
+(This is the anti-magic area with traps that cancel Torch and Trueview. You might need to use the map to feel your way out.)
+Descend by either of the two adjacent down-staircases.
+Make a U-turn around to the left. (Collect a scroll of antimage.)
+Turn left. Go through the open door to the left at the end of this room.
+Go out north, north, and jump in the pit.
+You're back in the main area with shops! Sell off your trade goods, then descend.
+Step on the portal plate to return to the Keep.
+
+
+Area 8: The Citadel of Angrath, Part 1
+--------------------------------------
+Find the up-stairs in the southeast corner of Keep Level 4. Ascend.
+Go straight forward. Ascend.
+Turn left and go to the room with the slots on the walls.
+Place the Tear of Shaspuok in the appropriate slot!
+(This will bring up an antipiracy screen. Use hexx-manual.pdf to answer the questions.)
+The grated door to your west has opened.
+Go in and left. Open the wooden door. Kill the orc.
+Open the wooden door. Kill the knight. Collect the ruby key (and a n'egg).
+Go back down the stairs, straight, and down again.
+Go around to the right and find the door to the Citadel of Angrath.
+Open Angrath's blue door with the ruby key.
+(Open the grated door. Collect 20 elf arrows and two n'eggs.)
+Step on the portal plate! (This area is empty.)
+Ascend the left-hand staircase.
+Open the grated door. Kill four minotaurs.
+(Open the grated door straight ahead of you; it just leads to the other staircase.)
+Open the grated door to the east. Kill the frogman.
+The sign says, "THE OLD ONES WARD THE LAIR OF LORD ANGRATH'S HEART".
+This area is a huge maze with orientation-flipping traps! Explore it without opening any doors for now.
+Find and kill two redbints in the north half of the map.
+Find and kill a minotaur in the south half of the map.
+Find and kill a frogman in the southwest corner of the map.
+Find the pair of doors on the map. 4 tiles east and 2 tiles north of there, collect a pair of battle gloves well-hidden on the ground.
+Near the northeast corner, collect a golden shield.
+(Open the north-facing wooden door in the northeast corner of the map with a common key. Kill the minotaur and the mage.)
+(Open the south-facing wooden door on the east edge of the map. Collect a drumstick.)
+Find the north-facing wooden door on the north edge of the map.
+Open the wooden door with a common key. Kill the redbint.
+Go in and left. Kill the minotaur. (Collect a blood leathers at the end of this area.)
+Open the wooden door with a common key. (This area is empty.)
+Behind the wooden door to the right is a dragon amulet.
+(Behind the wooden door straight ahead is a teleport trap that takes you to the south end of the level. Don't open it!)
+Open the grated door to your left. Kill about four monsters.
+Follow the left wall. Open the wooden door.
+Keep following the left wall. Collect the silver key.
+Keep following the left wall, back out.
+(The grated door requires a ruby key.)
+Open the wooden door to the teleport trap. Step on the trap to teleport to the south edge of the map.
+Open the wooden door. Find and kill three minotaurs and a mage.
+Go left and north.
+Collect a golden helm at the end of this corridor.
+Open the wooden door with a common key. Kill the frogman.
+Go in and left. Collect the gold key!
+Go back out to the central hub-thing. Go around via its north side. (There is a teleport trap blocking the south side.)
+Open the grated door with the silver key.
+Open the inner door with the gold key.
+Go in and turn left. Collect the ruby key well-hidden on the floor, one space west and two south of the inner door.
+Find your way back to the remaining door on this level.
+Open the grated door with the ruby key.
+The sign says, "ONWARDS TO THY GREATER GLORIES".
+(Collect a biscuit.)
+Open the wooden door. Kill the redbint and the frogman.
+Ascend.
+
+Area 9: The Citadel of Angrath, Part 2
+--------------------------------------
+Turn left. Collect the serpent key (and a cheese).
+Open either of the dragon doors to the north. Turn left.
+Open the dragon door with the serpent key.
+Open the double wooden doors. Kill two minotaurs.
+This hallway is full of teleport traps!
+
+    XXXXX
+    X..|.
+    X..|.
+    X.pXX
+    X..O
+    Xp.X
+    X..XX_X
+    X..XO.X
+    X.pX..X
+    X..X.pX
+    X..X..X
+    Xp.XO.X
+    X...p.X
+    X.....O
+    XOXXXOX
+
+    X - wall
+    O - obelisk or brazier
+    p - teleport trap (takes you back to the beginning of the hallway)
+    . - safe path
+
+Hug the right wall until you are at the bloodstain across from the obelisk.
+Hug the left wall until you are at the dragon banner across from the wood panel.
+Hug the right wall until you are across from the swords.
+Go to the swords, then walk due south to the wall.
+Walk due east to the corner.
+Walk north until you are just past the obelisk; then cut diagonally to the space north of the obelisk.
+Hug the left wall until you reach the brazier.
+Cut diagonally to the dragon door.
+You're home free!
+
+Open the dragon door. Kill the death knight.
+To your right is an alcove with a blue button, a moon elixir, and a well-hidden ruby key.
+Collect the ruby key (and moon elixir, mithril boots, and yellow n'egg).
+Click the blue button to vanish a brazier behind you, creating a shortcut.
+Take the shortcut.
+Open the dragon door with the ruby key. Kill the minotaur. (Collect a blue n'egg.)
+Follow your nose. Kill another minotaur. (Collect a scroll of vivify.)
+Open the grated door.
+Open the left-hand wooden door with a common key. Kill the roundhead and the demon.
+Find and kill another roundhead and a minotaur, then two minotaurs in a dead end.
+(Collect a blood helm.)
+This is a puzzle!
+Step on the silver plate to rotate the block to your right.
+Click the small red square that was just revealed there.
+Turn left and open the wooden door. Collect the night key.
+(By hanging out back of the other shed, you can blindly sneak the gold key and the Heron Shield from inside the shed.)
+Follow the right wall all the way around to the grated door.
+Open the grated door with the night key. (Collect a scroll of ethblade.)
+The sign says, "TO PASS THE LOCK JUST TURN THE BLOCK".
+Click the blue button to rotate the second shed.
+If you have not already sneaked the gold key from the second shed, go back and collect it now (and a Heron Shield).
+Open the dragon door with the gold key. Kill the frogman and the knight. (Collect a Hedjog Venom.)
+Go around to the left and find the stairs.
+Ascend.
+
+Open the double wooden doors with a common key. Kill the orc and the frogman.
+Turn left and kill the roundhead.
+Follow the left wall. (Collect a battle gloves.)
+(Open the wooden door with a common key. Kill the demon. Collect a dragon ring and 10 hail of doom.)
+Open the dragon door. Kill the minotaur.
+Don't touch anything! This is a puzzle!
+
+Go all the way to the east edge of the map and click the blue square to vanish the obelisk to the right of the exit hallway.
+(You might notice a new wall appear when you misstep on your way there. Don't worry about it.)
+Go all the way west and click the blue button to vanish that wall again.
+(You might notice a new brazier appear. Don't worry about it.)
+Go carefully back east, hugging the wall near the portal plate where the vanished obelisk used to be.
+If you misstep and the wall reappears, go click the blue button again.
+Collect the silver key.
+Go north. Open the grated door with the silver key.
+Click the green square to vanish a brazier on the west side of the map.
+Go click the yellow button to vanish the brazier that appeared earlier.
+Go carefully north, hugging the left wall where the vanished brazier used to be.
+Turn right and click the blue button.
+There is a well-hidden ruby key in the alcove behind you. Collect the ruby key.
+Click the original blue button to vanish the wall; go carefully east.
+Open the grated door with the ruby key.
+Open the left-hand wooden door. Collect the fourth backpack!
+Open the right-hand wooden door. (Collect 10 elf arrows.)
+Open the inner wooden doors to reveal gem slots.
+Place the moon gem in the slot.
+Collect the ruby key (and an elven chain).
+Place the moon gem in the slot to come back.
+Place the fire gem in the slot.
+Open the dragon door with the ruby key. (Collect a battle staff.)
+Go left. Open the grated door. Kill the death knight and the orc.
+(The dragon door to your left is just a regen chamber.)
+The sign says, "YOU WILL NEVER DEFEAT THE WIZARD IN HIS LAIR".
+Ascend. (This area is empty.)
+
+Just about every hallway on this level is filled with arc bolts.
+You WILL die many many times.
+Save your game.
+
+In order to get hit by an arc bolt and not die, you need to have Antimage in effect.
+Some squares on this level are anti-magic traps that will remove Antimage.
+Therefore, select it and keep casting it (e.g. by entering combat with "space") as you move through the level.
+
+Here is a map of the level, with the relatively safe spots marked:
+
+    ###################
+    #....I....#o.+.o.##
+    ##o.o##...|..|.#..#
+    #......#.#..#..##I#
+    ###o#..#^#..L#....#   o - obelisk
+    #......###oo####..#   # - wall
+    #.#o#.#....p...#..#   v - down stairs
+    #....#.....#...o#.#   ^ - up stairs
+    ####.o..o3#4......#   | - wooden partition
+    #.......###.......#   + - door (requires common key)
+    ####1~#...#.o##o###   I - door (will not budge)
+    #o.x......#....#7.#   L - bed
+    #..###2#_#..##.#..#
+    ##...o......o..6#.#   M - monsters here, beware!
+    #v#.###.#o#####G#.#   G - needs a gold key
+    #.....#.o...#...o.#   t - anti-magic trap
+    #..o..#.#..o#.o.#.#
+    ##..#L#5+...#.....#
+    ###################
+
+Click the green square to vanish an obelisk to your left.
+Run to the niche on the left (1). Cast antimage.
+Run to the niche on the right (2). Cast antimage.
+Run north and hook around the obelisk (3). You'll be relatively safe here. Cast antimage.
+Run across the plate (p) and make sure your antimage is holding.
+Collect the gold key (4).
+Run south. Make sure your antimage is holding.
+At (5), make sure your antimage is holding, and switch to your combat spells.
+Open the wooden door with a common key. Kill four monsters.
+Collect Deathbringer.
+(This room is relatively safe from arcbolts.)
+Switch back to antimage. Cast antimage. Equip the gold key.
+Leave the room and follow the right wall.
+At (6), open the grated door with the gold key.
+All your spells will fizzle everywhere in this area.
+Run down the hall to meet the orc out of range of the arc bolts, if possible.
+Kill the orc, or run around it. Collect the serpent key (7).
+Click the green button (7).
+The sign says, "NORTHWARD YOU MUST TRAVEL TO CAGE THE ARC".
+
