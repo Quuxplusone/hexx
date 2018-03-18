@@ -84,8 +84,11 @@ Offsets [0xA10C .. 0xA144) define the items for sale in the Grog Shop.
 Offsets [0xA144 .. 0xA17C) define the items for sale in the south shop in Shaspuok's tower.
 Offsets [0xA17C .. 0xA1B4) define the items for sale in the north shop in Shaspuok's tower.
 
+Offsets [0xA1B4 .. 0xA23C) ???
 
-Offsets [0xA1B4 .. 0xA50A) ??? 854 bytes
+Offsets [0xA23C .. 0xA240) define the width and height of the current dungeon level's map.
+
+Offsets [0xA240 .. 0xA50A) ???
 
 
 Offsets [0xA50A .. 0xAC8C) define map data for the current level (up to 31x31x2 bytes).

@@ -8,6 +8,7 @@ import struct
 import sys
 
 from pyhexx.images import hexx_thumbnail_from_file, dump_hexx_thumbnail
+from pyhexx.towers import DungeonTowers
 
 def as_hex(s):
     return ' '.join('%02X' % ord(ch) for ch in s)
@@ -33,14 +34,6 @@ def as_pixel(s):
         elif ord(ch) < 0xF0: result += '8'
         elif ord(ch) < 0x100: result += '#'
     return result
-
-class DungeonTowers:
-    KEEP = 0
-    GRISSLEM = 1
-    SHASPUOK = 2
-    ANGRATH = 3
-    XTLALTIC = 4
-    ZENDIK = 5
 
 class Spells:
     ALL =      0xFFFFFFFF
@@ -498,9 +491,9 @@ class Inventory:
 
 
 class Character:
-    def __init__(self, position, contents):
+    def __init__(self, party_position, contents):
         assert len(contents) == 106, 'Character data has the wrong length'
-        self.position_ = position
+        self.party_position_ = party_position
         (
             self.character_index,
             self.bytes_B0CD_B0CF,
@@ -572,12 +565,6 @@ class Character:
             self.bytes_B132_B136,
         )
 
-    def find_empty_inventory_slot(self):
-        i = self.inventory.find_empty_slot()
-        if i is not None:
-            return InventorySlot(self.position_, i)
-        return None
-
     def learn_spells(self, which):
         self.spells |= which
 
@@ -635,7 +622,9 @@ class SaveGame:
             Shop(contents[0xA144:0xA17C]),  # We Sell The Best (South)
             Shop(contents[0xA17C:0xA1B4]),  # We Sell The Best (North)
         ]
-        self.bytes_A1B4_B0CC = contents[0xA1B4:0xB0CC]
+        self.bytes_A1B4_A23C = contents[0xA1B4:0xA23C]
+        self.map_dimensions = struct.unpack('<HH', contents[0xA23C:0xA240])
+        self.bytes_A240_B0CC = contents[0xA240:0xB0CC]
         self.characters = [
             Character(0, contents[0xB0CC:0xB136]),
             Character(1, contents[0xB136:0xB1A0]),
@@ -676,7 +665,9 @@ class SaveGame:
         contents += self.bytes_A040_A064
         for shop in self.shops:
             contents += shop.dumps()
-        contents += self.bytes_A1B4_B0CC
+        contents += self.bytes_A1B4_A23C
+        contents += struct.pack('<HH', *self.map_dimensions)
+        contents += self.bytes_A240_B0CC
         for character in self.characters:
             contents += character.dumps()
         contents += self.bytes_B274_B278
@@ -861,15 +852,13 @@ def describe_map(fname):
     with open(fname, "rb") as f:
         contents = f.read()
     def glyphfor(tile):
-        if tile & 0x0040:
-            return ' !!!!'
         tile &= ~0x0008  # remove map-visibility bit
         if (tile & 0x0001) == 0:  # if it is passable...
             tile &= ~0x0080  # remove monster bit
             tile &= ~0x0040  # remove item bit
         if (tile == 0x0000):
             return ' ....'
-        elif (tile in [0x0001, 0x0181, 0x0191, 0x01A1, 0x01B1]):
+        elif (tile in [0x0001, 0x0181, 0x0191, 0x01A1, 0x01B1, 0x281, 0x291, 0x2A1, 0x2B1]):
             return ' ####'
         elif (tile == 0x0103):
             return '  <> '
@@ -884,8 +873,7 @@ def describe_map(fname):
         else:
             return '.'
     total_tiles = []
-    map_width = 17
-    map_height = 17
+    map_width, map_height = struct.unpack('<HH', contents[0xA23C:0xA240])
     for y in range(map_height):
         tiles = struct.unpack('<' + str(map_width) + 'H', contents[0xA50A + 2*map_width*y : 0xA50A + 2*map_width*(y+1)])
         print ''.join(glyphfor(tile) for tile in tiles)
