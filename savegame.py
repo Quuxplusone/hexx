@@ -512,7 +512,8 @@ class Character:
             self.current_int, self.intrinsic_int,
             self.current_dex, self.intrinsic_dex,
             self.current_con, self.intrinsic_con,
-            self.bytes_B110_B118,
+            self.current_ac, self.intrinsic_ac,
+            self.bytes_B112_B118,
             self.readied_spell,
             self.readied_spellbook,
             self.bytes_B11A_B11C,
@@ -522,12 +523,14 @@ class Character:
             self.byte_B131,
             self.bytes_B132_B136,
         ) = struct.unpack(
-            '<B2sBHHHHHHII32sIbBbBbBbB8sBB2s8s12sBB4s',
+            '<B2sBHHHHHHII32sIbBbBbBbBBB6sBB2s8s12sBB4s',
             contents,
         )
         assert 0 <= self.readied_spellbook <= 3
         self.readied_spell = Spells.from_index(self.readied_spell)
         self.spells = struct.unpack("<I", struct.pack(">I", self.spells))[0]  # swap endianness
+        self.current_ac = 10 - self.current_ac
+        self.intrinsic_ac = 10 - self.intrinsic_ac
         self.first_name = self.first_name.rstrip('\xFF')
         self.last_name = self.last_name.rstrip('\xFF')
         self.inventory = Inventory(True, inventory_contents)
@@ -536,7 +539,7 @@ class Character:
 
     def dumps(self):
         return struct.pack(
-            '<B2sBHHHHHHII32sIbBbBbBbB8sBB2s8s12sBB4s',
+            '<B2sBHHHHHHII32sIbBbBbBbBBB6sBB2s8s12sBB4s',
             self.character_index,
             self.bytes_B0CD_B0CF,
             self.level,
@@ -554,7 +557,8 @@ class Character:
             self.current_int, self.intrinsic_int,
             self.current_dex, self.intrinsic_dex,
             self.current_con, self.intrinsic_con,
-            self.bytes_B110_B118,
+            10 - self.current_ac, 10 - self.intrinsic_ac,
+            self.bytes_B112_B118,
             Spells.to_index(self.readied_spell),
             self.readied_spellbook,
             self.bytes_B11A_B11C,
@@ -599,12 +603,15 @@ class SaveGame:
         (
             self.dungeon_tower,
             self.dungeon_level,
-            self.bytes_A026_A02C,
+            current_x,
+            current_z,
+            current_y,
             self.player_facing,
             self.player_position,
             self.character_spellbook_selected,
             self.character_inventory_selected,
-        ) = struct.unpack('<HH6sHHHH', contents[0xA022:0xA034])
+        ) = struct.unpack('<HHHHHHHHH', contents[0xA022:0xA034])
+        self.player_fine_position = (current_x, current_y, current_z)
         assert 0 <= self.dungeon_tower <= 5
         assert 0 <= self.dungeon_level <= 7
         if self.character_inventory_selected == 0x81:
@@ -651,10 +658,12 @@ class SaveGame:
         contents += self.name.ljust(29, '\x20')
         contents += '\0'
         contents += self.bytes_8022_A022
-        contents += struct.pack('<HH6sHHHH',
+        contents += struct.pack('<HHHHHHHHH',
             self.dungeon_tower,
             self.dungeon_level,
-            self.bytes_A026_A02C,
+            self.player_fine_position[0],  # X
+            self.player_fine_position[2],  # Z
+            self.player_fine_position[1],  # Y
             self.player_facing,
             self.player_position,
             self.character_spellbook_selected,
@@ -881,6 +890,19 @@ def describe_map(fname):
     for t in sorted(set(total_tiles)):
         print t, '- '
 
+def describe_pos(fname):
+    with open(fname, "rb") as f:
+        contents = f.read()
+    dungeon_tower, dungeon_level = struct.unpack('<HH', contents[0xA022:0xA026])
+    player_facing, player_position = struct.unpack('<HH', contents[0xA02C:0xA030])
+    map_width, map_height = struct.unpack('<HH', contents[0xA23C:0xA240])
+    player_x = (player_position/2) % map_width
+    player_y = (player_position/2) / map_width
+    print 'The party is in tower %d, level %d' % (dungeon_tower, dungeon_level + 1)
+    print 'Rawpos %04X is (%d, %d) on a map of dimensions (%d, %d)' % (
+        player_position, player_x, player_y, map_width, map_height
+    )
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     group = parser.add_argument_group(title='plus exactly one of the following actions').add_mutually_exclusive_group(required=True)
@@ -889,12 +911,14 @@ if __name__ == '__main__':
     group.add_argument('--describe-global-items', action='store_true', help='describe all floor-items in the global list')
     group.add_argument('--describe-local-items', action='store_true', help='describe all floor-items on the current level')
     group.add_argument('--describe-map', action='store_true', help='describe the current level')
+    group.add_argument('--describe-pos', action='store_true', help="describe the party's position")
     group.add_argument('--describe-monsters', action='store_true', help='list all tracked monsters')
     group.add_argument('--edit', action='store_true', help='make changes to the file (and save a backup if necessary)')
     group.add_argument('--blank-range', type=str, metavar='1234:1238', help='zero out a portion of the file')
     group.add_argument('--gain-common-keys', action='store_true', help='make changes to the file (and save a backup if necessary)')
     group.add_argument('--gain-crystal-kit', action='store_true', help='make changes to the file (and save a backup if necessary)')
     group.add_argument('--gain-talismans', action='store_true', help='make changes to the file (and save a backup if necessary)')
+    group.add_argument('--phaze', type=str, metavar='x,y', help='teleport to a different place in the current level')
     group.add_argument('--replace-thumbnail', metavar='IMAGE.PNG', type=str, help='make changes to the file (and save a backup if necessary)')
     group.add_argument('--reveal-map', action='store_true', help='reveal the current level')
     parser.add_argument('--by', type=int, default=32, help='column width for --dump and --dump-range')
@@ -909,6 +933,7 @@ if __name__ == '__main__':
         options.gain_common_keys,
         options.gain_crystal_kit,
         options.gain_talismans,
+        options.phaze,
         options.replace_thumbnail,
         options.reveal_map,
     ])
@@ -936,6 +961,9 @@ if __name__ == '__main__':
     elif options.describe_map:
         for fname in options.filename:
             describe_map(fname)
+    elif options.describe_pos:
+        for fname in options.filename:
+            describe_pos(fname)
     elif options.edit:
         if len(options.filename) != 1:
             parser.error('For safety, editing is restricted to only one file at a time')
@@ -952,6 +980,13 @@ if __name__ == '__main__':
                 sg.gain_item(Items.ANGRATHS_HEART)
                 sg.gain_item(Items.SHASPUOKS_TEAR)
                 sg.gain_item(Items.HORN_OF_XTLALTIC)
+            elif options.phaze is not None:
+                x, y = map(int, options.phaze.split(','))
+                assert x in range(sg.map_dimensions[0])
+                assert y in range(sg.map_dimensions[1])
+                current_z = sg.player_fine_position[2]
+                sg.player_fine_position = (0x40 + 0x80*x, 0x40 + 0x80*y, current_z)
+                sg.player_position = 2 * (y * sg.map_dimensions[0] + x)
             elif options.replace_thumbnail is not None:
                 sg.thumbnail = hexx_thumbnail_from_file(options.replace_thumbnail, w=60, h=34)
             else:
@@ -966,7 +1001,10 @@ if __name__ == '__main__':
                 #map_contents = ''
                 #for y in range(31):
                 #    for x in range(31):
-                #        map_contents += '\x08\x00'
+                #        if y > 0 or x > 0:
+                #            map_contents += '\x09\x00'
+                #        else:
+                #            map_contents += '\x08\x00'
                 #contents = contents[:0xA50A] + map_contents + contents[0xAC8C:]
                 #contents = contents[:0x8022] + ('\0' * (0xA002-0x8022)) + contents[0xA002:] # kill monsters
 

@@ -125,6 +125,8 @@ Most items can be ignored and sold off for cash (to buy spells), but the followi
 - Serpent Amulet (increases STR by 5 when worn)
 - Night Amulet (increases DEX by 5 when worn)
 - Dragon Amulet (increases CON by 5 when worn)
+- Moon Amulet (decreases AC by 5 when worn)
+
 
 
 Walkthrough
@@ -969,4 +971,46 @@ Run down the hall to meet the orc out of range of the arc bolts, if possible.
 Kill the orc, or run around it. Collect the serpent key (7).
 Click the green button (7).
 The sign says, "NORTHWARD YOU MUST TRAVEL TO CAGE THE ARC".
+
+...At this point I gave up and hacked my way to the upper left-hand corner...
+
+Open the grated door with the serpent key. Kill the orc. (Collect a biscuit.)
+Ascend. (Collect a scroll of wizeye.)
+Open the wooden door. Open the dragon door.
+(The east door needs a ruby key.)
+Open the grated door to the west. Kill the death knight.
+(Collect a Chymera Blood, elf gloves, Phoenix Broth, bread.)
+In the alcove to the right of the dragon door is a well-hidden ruby key. Collect the ruby key.
+Go back out. Open the grated door with the ruby key. Kill the frogman, mage, minotaur, and roundhead.
+(Turn right. Open the wooden door with a common key. Open the next wooden door. Kill the knight. Collect Scream Slicer.)
+The sign says, "WITHIN THE DRAGON LIES THE POWER".
+Go to the left of the sign. Collect the night key (and a power potion).
+Go back out and west (beware the orientation-flipping trap!) and to the dragon door.
+Open the dragon door with the night key.
+There is an open wooden door at the end of this room. Kill the minotaur.
+(Collect a corn.)
+Ascend.
+Open the wooden door to your left.
+Collect the gold key. (And elven helm, and cheese.)
+Open the wooden door to your right with a common key. Kill the cyclops.
+Collect the night key. (And elven plate.)
+Open the grated door with the gold key. Kill the frogman.
+The sign in the middle of this area says, "THE DRAGON HEART AWAKES".
+(The door on the west side of the level requires a serpent key.)
+(The door upstairs requires a ruby key.)
+Go to the door on the east side of this level.
+Open the dragon door with the night key. Kill the demon.
+Collect the serpent key (and 10 arrows, a biscuit, blood boots, Phoenix Broth).
+Go out and across the level to the west door.
+Open the dragon door with the serpent key. Kill the demon.
+Collect the silver key (and an apple, dragon shield, moon elixir).
+Go to the dragon door in the middle of this level.
+Open the dragon door with the silver key. Kill the roundhead, orc, two minotaurs.
+Collect the ruby key (and Brainbiter, Orc's Vomit).
+Open the grated door with the ruby key. Kill the roundhead.
+Collect a Chymera Blood, a firestaff, 10 elf arrows, and a moon amulet.
+Collect Angrath's Heart!
+
+...There is no fast path to get back down. Have to pass the arc bolts AGAIN? ...
+
 

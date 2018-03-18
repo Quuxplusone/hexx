@@ -13,28 +13,30 @@
     two adjacent bits show up in the output of this script.
 """
 
+import argparse
+import struct
 import sys
 
 def as_hex(s):
     return ' '.join('%02X' % ch for ch in s)
 
-def findbits(yeses, noes):
+def get_contents(fname):
+    with open(fname, "rb") as f:
+        contents = f.read()
+    assert len(contents) == 0xF670, 'Savefile has the wrong length'
+    return contents
+
+def find_bits(yeses, noes):
     yes_bits_invariably_1 = [0xFF] * 0xE004 + [0x00] * (0xF670 - 0xE004)
     yes_bits_invariably_0 = [0xFF] * 0xE004 + [0x00] * (0xF670 - 0xE004)
     no_bits_invariably_1  = [0xFF] * 0xE004 + [0x00] * (0xF670 - 0xE004)
     no_bits_invariably_0  = [0xFF] * 0xE004 + [0x00] * (0xF670 - 0xE004)
     for fname in yeses:
-        with open(fname, "rb") as f:
-            contents = f.read()
-        assert len(contents) == 0xF670, 'Savefile has the wrong length'
-        bits = [ord(byte) for byte in contents]
+        bits = map(ord, get_contents(fname))
         yes_bits_invariably_1 = [a & b for a, b in zip(yes_bits_invariably_1, bits)]
         yes_bits_invariably_0 = [a & ~b for a, b in zip(yes_bits_invariably_0, bits)]
     for fname in noes:
-        with open(fname, "rb") as f:
-            contents = f.read()
-        assert len(contents) == 0xF670, 'Savefile has the wrong length'
-        bits = [ord(byte) for byte in contents]
+        bits = map(ord, get_contents(fname))
         no_bits_invariably_1 = [a & b for a, b in zip(no_bits_invariably_1, bits)]
         no_bits_invariably_0 = [a & ~b for a, b in zip(no_bits_invariably_0, bits)]
     possible_culprit_bits = [(a & b) | (c & d) for a,b,c,d in zip(
@@ -46,8 +48,43 @@ def findbits(yeses, noes):
         if sum(row) != 0:
             print '0x%04x %s-%s' % (i, as_hex(row[:8]), as_hex(row[8:]))
 
+def find_countdowns(fnames):
+    def to_bytes(s):
+        return map(ord, s)
+    def to_shorts(s):
+        result = []
+        for i in xrange(len(s) - 1):
+            result.append(struct.unpack('<H', s[i:i+2]))
+        return result
+    def is_strictly_ascending(seq):
+        return all(earlier < later for earlier, later in zip(seq, seq[1:]))
+    def is_strictly_descending(seq):
+        return all(earlier > later for earlier, later in zip(seq, seq[1:]))
+
+    contentses = map(get_contents, fnames)
+    zipped_bytes = zip(*map(to_bytes, contentses))
+    zipped_shorts = zip(*map(to_shorts, contentses))
+    for i, seq in enumerate(zipped_bytes):
+        if is_strictly_descending(seq):
+            print 'Byte %04X:%04X is strictly descending: %r' % (i, i+1, seq)
+        elif is_strictly_ascending(seq):
+            print 'Byte %04X:%04X is strictly ascending: %r' % (i, i+1, seq)
+    for i, seq in enumerate(zipped_shorts):
+        if is_strictly_descending(seq):
+            print 'Short %04X:%04X is strictly descending: %r' % (i, i+2, seq)
+        elif is_strictly_ascending(seq):
+            print 'Short %04X:%04X is strictly ascending: %r' % (i, i+2, seq)
+
 if __name__ == '__main__':
-    yesfnames = []
-    nofnames = []
-    i = sys.argv.index('--')
-    findbits(sys.argv[1:i], sys.argv[i+1:])
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--countdown', action='store_true', help='look for countdown bytes or shorts')
+    parser.add_argument('rest', nargs=argparse.REMAINDER)
+    options = parser.parse_args()
+
+    if options.countdown:
+        find_countdowns(options.rest)
+    else:
+        yesfnames = []
+        nofnames = []
+        i = rest.index('--')
+        find_bits(options.rest[1:i], options.rest[i+1:])

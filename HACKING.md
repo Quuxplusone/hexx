@@ -62,9 +62,11 @@ Offsets [0x8022 .. 0xA022) memory-mapped heap of monster records (32 bytes each)
 
 Offsets [0xA022 .. 0xA024) defines the current dungeon tower (0=Keep, 1=Grisslem, etc).
 Offsets [0xA024 .. 0xA026) defines the current dungeon level within the tower (0 through 7).
-Offsets [0xA026 .. 0xA02C) ??? 6 bytes
+Offsets [0xA026 .. 0xA028) defines the player's X coordinate, in units of 0x80ths of a tile.
+Offsets [0xA028 .. 0xA02A) defines the player's Z coordinate (0B is normal; 8A is suspended; may be negative if falling through a pit).
+Offsets [0xA02A .. 0xA02C) defines the player's Y coordinate, in units of 0x80ths of a tile.
 Offsets [0xA02C .. 0xA02E) define the player's facing.
-Offsets [0xA02E .. 0xA030) define the player's location. (But modifying this is deadly.)
+Offsets [0xA02E .. 0xA030) define the player's tile location, which must be in agreement with the X and Y coordinates defined above.
 Offsets [0xA030 .. 0xA032) define the character whose spells are visible (0..3).
 Offsets [0xA032 .. 0xA034) define the highlighted character (0..3, or 0x81 for "none").
 Offsets [0xA034 .. 0xA038) ??? 4 bytes
@@ -73,9 +75,22 @@ Offsets [0xA03A .. 0xA03C) is a pointer `p` where `0x8000 + p` is the head of th
 Offsets [0xA03C .. 0xA03E) is a pointer `p` where `0x8000 + p` is 32 bytes past the tail of the monster list.
 Offsets [0xA03E .. 0xA040) define the item "held in the cursor."
 
+Offsets [0xA040 .. 0xA042) ??? 2 bytes
 
-Offsets [0xA040 .. 0xA064) ??? 36 bytes
+Offset 0xA042 is a countdown for Torch (max value 0xFF).
 
+Offsets [0xA043 .. 0xA056) ??? 19 bytes
+
+Offsets [0xA056 .. 0xA05D) are the strengths of continuous-effect spells in the spell bar:
+- Offset A056 is the current strength of Armour.
+- Offset A057 is the current strength of Levitate.
+- Offset A058 is the current strength of Warpower.
+- Offset A059 is the current strength of Deflect.
+- Offset A05A is the current strength of Antimage.
+- Offset A05B is the current strength of Trueview.
+- Offset A05C is the current strength of Regen.
+
+Offsets [0xA05D .. 0xA064) ??? 7 bytes
 
 Offsets [0xA064 .. 0xA09C) define the items for sale in Ye Shoppe, one byte apiece. (7 per row x 4 rows x 2 pages = 56 bytes.)
 Offsets [0xA09C .. 0xA0D4) define the items for sale in Ozzrik's
@@ -84,12 +99,11 @@ Offsets [0xA10C .. 0xA144) define the items for sale in the Grog Shop.
 Offsets [0xA144 .. 0xA17C) define the items for sale in the south shop in Shaspuok's tower.
 Offsets [0xA17C .. 0xA1B4) define the items for sale in the north shop in Shaspuok's tower.
 
-Offsets [0xA1B4 .. 0xA23C) ???
+Offsets [0xA1B4 .. 0xA23C) ??? 136 bytes
 
 Offsets [0xA23C .. 0xA240) define the width and height of the current dungeon level's map.
 
-Offsets [0xA240 .. 0xA50A) ???
-
+Offsets [0xA240 .. 0xA50A) ??? 714 bytes
 
 Offsets [0xA50A .. 0xAC8C) define map data for the current level (up to 31x31x2 bytes).
 Each dungeon tile is represented by a 2-byte little-endian value.
@@ -101,7 +115,7 @@ Bits 0101 indicate a wall decoration of some kind.
 The banner designs are not controllable; they cycle based on (x,y) coordinates.
 The obelisk/brazier designs are not controllable; they cycle every 4x4 tiles.
 
-Offsets [0xAC8C .. 0xB0CC) is 1088 bytes
+Offsets [0xAC8C .. 0xB0CC) ??? 1088 bytes
 
 
 Offsets [0xB0CC .. 0xB136) define the front-left character (106 bytes):
@@ -128,15 +142,17 @@ Offsets [0xB0CC .. 0xB136) define the front-left character (106 bytes):
 - Offsets [0xB10D .. 0xB10E) define the character's intrinsic DEX.
 - Offsets [0xB10E .. 0xB10F) define the character's current CON.
 - Offsets [0xB10F .. 0xB110) define the character's intrinsic CON.
-- Offsets [0xB110 .. 0xB118) ??? 8 bytes
+- Offsets [0xB110 .. 0xB111) define the character's current AC (00 = +10, 01 = +9, etc.)
+- Offsets [0xB110 .. 0xB111) define the character's intrinsic AC.
+- Offsets [0xB112 .. 0xB118) ??? 6 bytes
 - Offsets [0xB118 .. 0xB119) defines the character's readied spell (00 = armour, 1F = mindrage, 20 = no spell)
 - Offsets [0xB119 .. 0xB11A) defines the character's readied spellbook (00 = green, 03 = purple)
 - Offsets [0xB11A .. 0xB11C) ??? 2 bytes
 - Offsets [0xB11C .. 0xB124) contains the character's first name, padded with FF bytes on the end.
 - Offsets [0xB124 .. 0xB130) contains the character's last name, padded with FF bytes on the end.
 - Offsets [0xB130 .. 0xB131) define the character's hunger level (00 = starving, FF = stuffed).
-- Offsets [0xB131 .. 0xB132) seems to always be FF.
-- Offsets [0xB132 .. 0xB136) ??? 4 bytes of zeros
+- Offsets [0xB131 .. 0xB132) ??? usually 0xFF, but can be 0x00
+- Offsets [0xB132 .. 0xB136) ??? usually zeros, but second byte can be 0x12
 
 Offsets [0xB136 .. 0xB1A0) define the front-right character (106 bytes).
 Offsets [0xB1A0 .. 0xB20A) define the rear-left character (106 bytes).
@@ -146,9 +162,9 @@ Offsets [0xB274 .. 0xB278) ??? 4 bytes of zeros
 
 There are four backpacks in the game, each with 12 inventory slots.
 Offsets [0xB278 .. 0xB290) define the contents of backpack 0x00 (found just after "FAST ROUTE DOWN").
-Offsets [0xB290 .. 0xB2A8) define the contents of backpack 0x01 (found in the Tower of Grisslem).
-Offsets [0xB2A8 .. 0xB2C0) define the contents of backpack 0x02 ().
-Offsets [0xB2C0 .. 0xB2D8) define the contents of backpack 0x03 ().
+Offsets [0xB290 .. 0xB2A8) define the contents of backpack 0x01 (found in Grisslem's tower).
+Offsets [0xB2A8 .. 0xB2C0) define the contents of backpack 0x02 (found in Shaspuok's tower).
+Offsets [0xB2C0 .. 0xB2D8) define the contents of backpack 0x03 (found in Angrath's tower).
 
 Offsets [0xB2D8 .. 0xE004) ??? 11564 bytes
 
@@ -160,7 +176,7 @@ Offsets [0xB2F4 .. 0xB2F6) define the number of bytes in the floor-item-list tha
 - Blanking the global data will NOT affect the items on the current level, but it can make the game crash when
   you change levels and the game tries to load items from global that aren't there anymore.
 
-Offsets [0xC2F6 .. 0xDB6A) look like maybe monster records???
+Offsets [0xC2F6 .. 0xDB6A) look like maybe more monster records???
 
 
 Offsets [0xE004 .. 0xE1E8) are the front-left character's big thumbnail, as a 256-color 22x22 bitmap.
