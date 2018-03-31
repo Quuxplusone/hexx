@@ -13,20 +13,29 @@ Before descending or ascending stairs, or jumping into pits, take precautions to
 - You can "pick up" a pile of keys (up to 99 keys) and hold it in your mouse cursor as you make the transition.
   Keys held in the cursor will not be lost.
 - You can store your keys in a backpack. Keys held in a backpack will not be lost.
-- You could also work around it by carrying many piles of 1 key each; but this is not good enough to finish the game.
+- You could also "work around it" by carrying many piles of 1 key each; but this gives you a maximum of 40 common keys, which is not nearly enough to finish the game.
 
 Before the first time you go downstairs, visit a shop and buy 99 common keys. Hold them in your cursor
 every time you go up or down levels. Do this until you find your first backpack; then put your keys
 in your backpack.
 
-Reportedly you can hack 99 keys into your front right character's left hand by hex-editing the bytes "8F 63"
-into offset 0xB15A of your save file. I have not tested this.
+You can also use `python savegame.py --gain-common-keys HEXX1.SAV` to gain back keys if you've
+managed to lose them by accident.
+
 
 Cutscene Bug
 ------------
 
-Picking up the talisman of a god triggers a cutscene (and anti-piracy verification). If you are playing
+Picking up the talisman of a god triggers a cutscene. If you are playing
 in DOSBox, this won't work and the game will just hang with a black screen.
+
+
+Anti-piracy validation
+----------------------
+
+Placing the talisman of a god into its appropriate receptacle triggers an anti-piracy screen.
+To answer the question(s) on this screen, you'll need the manual, which is available as
+`hexx-manual.pdf` in this directory.
 
 Combat
 ------
@@ -87,17 +96,17 @@ This comes partly from the manual (spell names and schools) and partly from expe
 - Terror (100 GP)
 - Antimage (300 GP)
 - Regen (400 GP)
-- Ethblade
-- Spelltap
-- Vivify
-- Disrupt
+- Ethblade (400 GP)
+- Spelltap (500 GP)
+- Vivify (800 GP)
+- Disrupt (700 GP)
 
 ### Red Spells (Dragon Magic)
 - Missile (100 GP)
 - Torch (200 GP)
 - Fireward (200 GP)
 - Dispell (300 GP)
-- Fireball
+- Fireball (300 GP)
 - Firepath
 - Recharge (500 GP)
 - Inferno (700 GP)
@@ -116,13 +125,14 @@ This comes partly from the manual (spell names and schools) and partly from expe
 Useful Items
 ------------
 
-Most items can be ignored and sold off for cash (to buy spells), but the following are permanently useful:
+Most items can be ignored or sold off for cash (to buy spells), but the following are permanently useful:
 
 - Power Potion (increases SP above maximum, to enable learning spells whose starting SP cost is too high)
 - Dragon Ale (increases INT by 1)
 - Orc's Vomit (increases STR by 1)
 - Cloud Amulet (???)
 - Serpent Amulet (increases STR by 5 when worn)
+- Chaos Amulet (increases INT by 5 when worn)
 - Night Amulet (increases DEX by 5 when worn)
 - Dragon Amulet (increases CON by 5 when worn)
 - Moon Amulet (decreases AC by 5 when worn)
@@ -890,7 +900,7 @@ Ascend.
 Open the double wooden doors with a common key. Kill the orc and the frogman.
 Turn left and kill the roundhead.
 Follow the left wall. (Collect a battle gloves.)
-(Open the wooden door with a common key. Kill the demon. Collect a dragon ring and 10 hail of doom.)
+(Open the wooden door with a common key. Kill the demon. Collect a dragon ring, a scroll of formwall, and 10 hail of doom.)
 Open the dragon door. Kill the minotaur.
 Don't touch anything! This is a puzzle!
 
@@ -933,8 +943,8 @@ Therefore, select it and keep casting it (e.g. by entering combat with "space") 
 Here is a map of the level, with the relatively safe spots marked:
 
     ###################
-    #....I....#o.+.o.##
-    ##o.o##...|..|.#..#
+    #....I....#o.+6o.##
+    ##o.o##...|..|.#.8#
     #......#.#..#..##I#
     ###o#..#^#..L#....#   o - obelisk
     #......###oo####..#   # - wall
@@ -943,11 +953,11 @@ Here is a map of the level, with the relatively safe spots marked:
     ####.o..o3#4......#   | - wooden partition
     #.......###.......#   + - door (requires common key)
     ####1~#...#.o##o###   I - door (will not budge)
-    #o.x......#....#7.#   L - bed
+    #o.x......#....#..#   L - bed
     #..###2#_#..##.#..#
-    ##...o......o..6#.#   M - monsters here, beware!
+    ##...o......o...#.#
     #v#.###.#o#####G#.#   G - needs a gold key
-    #.....#.o...#...o.#   t - anti-magic trap
+    #.....#.o...#...o.#
     #..o..#.#..o#.o.#.#
     ##..#L#5+...#.....#
     ###################
@@ -961,19 +971,33 @@ Collect the gold key (4).
 Run south. Make sure your antimage is holding.
 At (5), make sure your antimage is holding, and switch to your combat spells.
 Open the wooden door with a common key. Kill four monsters.
-Collect Deathbringer.
-(This room is relatively safe from arcbolts.)
-Switch back to antimage. Cast antimage. Equip the gold key.
-Leave the room and follow the right wall.
-At (6), open the grated door with the gold key.
-All your spells will fizzle everywhere in this area.
-Run down the hall to meet the orc out of range of the arc bolts, if possible.
-Kill the orc, or run around it. Collect the serpent key (7).
-Click the green button (7).
+(This room is safe from arcbolts. Close the door if it makes you feel safer.)
+(Collect Deathbringer.)
+Switch back to antimage. Cast antimage.
+Leave the room and run back across the plate to your hideout (3).
+
+Optional digression:
+- Run across the plate and north to (6).
+- Open the wooden door with a common key. Kill the demon.
+- (This room is safe from arcbolts. Close the door if it makes you feel safer.)
+- (Collect a war shield.)
+- Switch back to antimage. Cast antimage.
+
+Equip the gold key.
+Run south to the door at (8).
+All your spells will fizzle everywhere in this area. It is imperative that you get through the door and close it as soon as possible!
+At (8), open the grated door with the gold key. Go through. Close the door.
+Kill the orc.
+Collect the serpent key (and elf bow, 10 hail of doom).
 The sign says, "NORTHWARD YOU MUST TRAVEL TO CAGE THE ARC".
+Click the green button to open the door in the northeast corner of the map.
+Return to the grated door, which you had closed earlier.
+Cast antimage. It will probably fizzle anyway.
+Hug the right wall and run north.
+Go through the now-open grated door.
+Click the green button to cause an obelisk to appear in front of the arc-bolt machine in the northwest corner of the map. The level is now safe!
 
-...At this point I gave up and hacked my way to the upper left-hand corner...
-
+Go to the northwest corner of the map. (Collect a scroll of antimage.)
 Open the grated door with the serpent key. Kill the orc. (Collect a biscuit.)
 Ascend. (Collect a scroll of wizeye.)
 Open the wooden door. Open the dragon door.
@@ -1007,10 +1031,339 @@ Collect the silver key (and an apple, dragon shield, moon elixir).
 Go to the dragon door in the middle of this level.
 Open the dragon door with the silver key. Kill the roundhead, orc, two minotaurs.
 Collect the ruby key (and Brainbiter, Orc's Vomit).
-Open the grated door with the ruby key. Kill the roundhead.
+Ascend. Open the grated door with the ruby key. Kill the roundhead.
 Collect a Chymera Blood, a firestaff, 10 elf arrows, and a moon amulet.
 Collect Angrath's Heart!
+Go out and left. Descend.
+Follow around to the left. Descend.
+Follow the right wall, then turn left and straight. Descend to level 5.
+Follow the right wall. Descend to level 4.
+Follow around. Use the fire gem. Find the stairs and descend.
+Follow the right wall. Find the stairs and descend to level 2.
+Turn right. Go through the open wooden door.
+When you go through the next door, head straight northwest.
+Make a U-turn around to the right. Hug the north side of the map.
+(Watch out for an orientation-flipping trap in the northeast corner!)
+Make your way to the north outer wall of the central circular room.
+Face the sign; turn around; go through the door; turn left.
+Descend to level 1.
+Turn right. Take the portal plate back to the Keep.
 
-...There is no fast path to get back down. Have to pass the arc bolts AGAIN? ...
+
+Area 10: The Realm of Xtlaltic
+------------------------------
+Find the up-stairs in the southeast corner of Keep Level 4. Ascend.
+Go straight forward. Ascend.
+Turn left and go to the room with the slots on the walls.
+Place the Tear of Shaspuok in the appropriate slot!
+(This will bring up an antipiracy screen. Use hexx-manual.pdf to answer the questions.)
+Yet another grated door to your west has opened.
+Go in and left. Open the wooden door. Kill the knight.
+Open the wooden door. Kill the mage.
+Collect the sun key.
+Descend; descend. Find Xtlaltic's door.
+Open Xtlaltic's door with the sun key.
+Turn left. Open the grated door. Open the grated door.
+(Collect a red n'egg and 10 hail of doom.)
+Visit the bed and level up to Level 10!
+
+Step on the portal plate. (This area is empty.)
+Ascend either staircase.
+The barred door at the end of the hall requires a crystal key.
+The sign says, "THE LORDS OF CHAOS AWAIT YOU". Do not pass it!
+Kill five minotaurs coming from behind the sign.
+Pass to the right of the sign. (Collect an apple and a Hedjog Venom.)
+Pass to the left of the sign. You'll hit a teleport trap! Turn right! Kill a minotaur.
+(You are now behind the barred door requiring a crystal key.)
+Wait at the entrance to the big room in front of you (to the west). Kill the orc.
+Go straight west, watching your compass for orientation-flipping traps.
+(Turn left. Open the skull-themed wooden door. Inside is only a scroll of formwall.)
+Go north. Open the barred door. Kill the death knight. (Collect a chaos wand.)
+Open the wooden door with a common key. Collect the night key (and Chymera Blood).
+Go to the southeast corner of the map. Kill the minotaur. (Collect a scroll of vivify.)
+Go west down the long hall. (Look right. Collect a blood boots.)
+Open the barred door. Kill the death knight.
+The sign says, "CHAOS CAN NOT BE RULED BY MAN".
+Open the ape door in the southwest corner of the map with the night key.
+(Collect a bread and an Orc's Vomit. The ape door at the end of this area requires a ruby key.)
+
+Bear left to the southern staircase. Ascend.
+The sign says, "YOU MUST RISE BEFORE YOU FALL".
+Ascend.
+Ascend.
+(The barred door requires a gold key.)
+Step on the portal plate.
+Click the green button to vanish an obelisk blocking the gold key.
+Step on the portal plate to return.
+Open the wooden door, being careful not to fall in the pit. Collect the gold key.
+Open the barred door with the gold key. Kill the death knight and the skeleton.
+(The ape door ahead of you requires a night key.)
+Make a U-turn to your right and jump in the pit.
+(Collect a blue n'egg.)
+Jump in the pit. Kill the death knight. Collect the serpent key and the crystal key.
+Jump in the pit.
+Ascend by the southern staircase again; go through the gold-key door; jump in the pit.
+Open the barred door with the serpent key.
+Open the skull-themed wooden door. Go in and turn left. Open the wooden door. (Collect a scroll of levitate.)
+Turn right. Step on the portal plate.
+The sign says, "ONLY THEY WITH THE QUICKEST HAND AND KEENEST EYE WILL PREVAIL".
+Bear right and jump in the pit. Kill the death knight and the mage.
+(Collect 10 elf arrows.)
+In front of you are three portal plates. Step on the middle plate.
+Collect the sun key. Step on the plate to return.
+This is a puzzle!
+
+You're on level 3. Three plates, no buttons.
+Left plate goes to level 6 (north). Three plates and buttons.
+Middle plate goes to level 6 (middle). Obelisks blocking the way to upstairs. Current configuration: X,X,_.
+Right plate goes to level 6 (south). Three plates and buttons.
+There is also a button to the east of level 6 (middle), currently facing south.
+There is also a button to the east of level 6 (south), currently facing south.
+
+Step on the (south) right-hand plate to rotate the wall in front of you. Do it four times.
+Click the blue button to rotate the wall east of level 6 (middle).
+Go to level 6 (middle). Click the blue button to vanish an obelisk. Current configuration: _,X,_.
+Step on the (north) left-hand plate and click the red button to vanish the (south) middle plate.
+Click the (south) green button to vanish the (north) middle plate.
+Click the (north) green button to vanish the (south) left-hand plate.
+Click the (south) red button to rotate the shed.
+Turn right. Face the wooden door that has just appeared.
+Open the wooden door with a common key. Collect the night key (and elven plate and a chaos ring).
+Click the (north) blue button to vanish an obelisk. Current configuration: _,_,_.
+
+Step on the middle portal plate.
+Collect the sun key.
+Descend.
+Open the ape door with the night key. You've been here before!
+(You should still be carrying a sun key and a crystal key, by the way.)
+Descend. Descend. Descend to level 2.
+Go out the door and north.
+Click the red button next to the bed to vanish a wall to your left. Go through.
+(Collect an elf gloves.)
+(Open the barred door. Kill a demon, a frogman, and two minotaurs. Collect an elven helm and a scroll of fireward.)
+Face the barred door. The wall to your right is illusory. Go east.
+(Collect 10 hail of doom. Visit the Potions shop.)
+Open the wooden door with a common key. Ascend.
+Open the ape door with the sun key.
+The sign says, "YOU HAVE DONE WELL / NOW THE CHALLENGE BEGINS".
+(Collect 10 hail of doom.)
+Open the double doors with a common key. Kill a death knight, an orc, and a demon.
+(The barred door to your right requires a serpent key.)
+Bear left and around. Kill two death knights and a roundhead.
+(Collect a frost bow and 10 hail of doom.)
+(Open the wooden door with a common key. Collect a mithril chain.)
+This is a good time to visit the bed and level up to Level 11!
+Open the barred door on the left. Kill the knight. (Collect a Hedjog Venom.)
+Make a U-turn to the right. Collect the silver key. Go back out.
+Open the barred door to the right. Kill the mage.
+Open the ape door with the silver key. Collect the serpent key (and a war shield).
+Go back south and out almost to the double doors.
+Open the barred door with the serpent key.
+Ascend.
+Explore this area.
+Descend. Kill a minotaur, an orc, a knight, a demon, and two more minotaurs.
+(Collect a Chymera Blood and a scroll of ethblade.)
+(At the end of this area, collect an apple and a Chaos Amulet.)
+(Open the wooden door in the southeast corner with a common key. Collect an elf gloves.)
+Ascend again.
+Use the moon gem in the slot. (Collect 10 elf arrows.)
+Open the barred door. Kill two death knights and a minotaur. (Collect a power potion.)
+Open the wooden door with a common key. Kill the knight, death knight, and minotaur.
+(Collect an Orc's Vomit, a cheese, and The Watcher.)
+Collect the silver key.
+Go back the way you came. Use the moon gem to return.
+Use the fire gem in the slot. (Collect 10 elf arrows and a moon elixir.)
+Open the barred door. Turn left. Kill the orc, death knight, and demon. Collect the Grey Axe and the gold key.
+Open the wooden door with a common key. (Collect a scroll of wizeye.)
+Open the next wooden door. Kill the roundhead, orc, and frogman. (Collect a Dragon Ale.)
+Open the ape door with the gold key.
+Open the ape door with the silver key.
+Click the green button to vanish the obelisk opposite. Turn around! Kill the knight.
+Face the pit and turn right. Collect a well-disguised ruby key (and a power potion).
+Watch out for the pit here. Open the ape door.
+Go back to the green button and turn left. Ascend to level 5.
+Open the barred door. Kill the orc, two shreks, a minotaur and a roundhead.
+Explore this area. (Watch for orientation-flipping traps!)
+(Collect 10 elf arrows. Collect a Hedjog Venom.)
+The sign says, "THE WIZARD HAS LOST CONTROL".
+In the northwest corner, collect a second ruby key.
+In the southwest corner, go through the illusory wall. Kill the orc.
+Open the barred door with one of your ruby keys.
+==HERE== (saved 1-Q.sav)
+Step on the plate three times to rotate the shed. Open the wooden door. (The barred door requires a gold key.)
+Step on the plate one more time. Go through the shed.
+(Open the wooden door. Nothing here but a bed.)
+(Open the wooden door in the southeast corner. Collect a doom helm.)
+(The barred door requires a sun key.)
+Go out the way you came. Turn right. Collect the night key.
+(Collect a scroll of suspend. Collect crystal chain.)
+Go back to the northeast corner and descend to level 4.
+(You should be carrying a night key, a ruby key, and a crystal key.)
+Go to the knight's pit and jump in.
+(Collect 10 elf arrows and a cheese.)
+Open the wooden door. Kill two minotaurs.
+Open the wooden door with a common key. Descend. You've been here before!
+Make a U-turn to the right.
+Open the ape door with the ruby key. Go forward and kill an orc, a minotaur, and a demon.
+The sign says, "THE GREAT BLADE".
+Open the barred door. Collect the Rune Sword.
+Go back out the way you came.
+Ascend the south staircase. Ascend. Ascend to level 5.
+Go straight and U-turn right. Jump in the pit.
+U-turn right. Go into the shed and step on the portal plate.
+The sign says, "ONLY THEY WITH THE QUICKEST HAND AND KEENEST EYE WILL PREVAIL".
+Bear left and ascend. Kill the death knight.
+(Collect an apple and a red n'egg.)
+The sign says, "BE BRAVE AND PRESS ONWARDS".
+Step through the door. It will lock behind you.
+Jump forwards into the pit. Click the green button as you fall!
+(This vanishes a pillar to the north of the fallthrough. Jumping backwards and clicking the yellow button also works.)
+When you get to the bottom, step on the plate to return to the top.
+Jump in again. This time, use a scroll of levitate or cast levitate
+as soon as you enter the top of the level below the pit. You'll land "on top of" the pit.
+Go north. Ahead of you is the knight's pit.
+Bear left at the green button. Ascend to level 5.
+Make your way to the southwest corner.
+Step on the plate three times to rotate the shed. Go through.
+==HACK== At this point I cheated to gain a sun key.
+Open the barred door with the sun key. Kill the death knight.
+Collect the gold key (and a scroll of trueview).
+Go back through the shed. Step on the plate three more times.
+Open the barred door with the gold key. Kill the minotaur.
+Ascend. Monsters come from both directions! Kill two skavens and two frogmen.
+(Collect a Chymera Blood. At the end of this hall, collect a Death Blade.)
+Open the wooden door with a common key.
+Straight ahead is an illusory wall hiding an orc. Kill the orc.
+Kill the death knight and the skeleton.
+(This area is full of orientation-flipping traps.)
+Open the wooden door to the west. Kill the roundhead. (Collect elf boots.)
+Open the wooden door to the north. Collect the serpent key.
+(Open the wooden doors to the east and south. Nothing.)
+Go west. Open the north-facing ape door with the serpent key.
+Open the ape door with the night key.
+Ascend to level 7.
+The sign says, "PREPARE TO DIE ACCURSED DEFILERS". But this area is empty.
+(Collect a biscuit.)
+Ascend.
+Descend.
+(To your north there are two ape doors, both requiring sun keys; and a barred door that does not budge.)
+Turn left. Open the wooden door. Jump in the pit.
+Open the barred door. (Collect a corn.)
+Open the wooden door.
+Open the wooden door with a common key. Kill the roundhead and the death knight.
+Hug the left wall. Collect the sun key (and Grim Reaper and scroll of renew).
+Open the wooden door with a common key. Kill the demon and the death knight.
+Hug the left wall. Collect the silver key.
+Go to the southeast corner. Open the ape door with the silver key.
+Ascend. Kill the ogre. Collect a second sun key (and 10 hail of doom and a power potion).
+Click the yellow button to vanish the obelisk to your left. Go through the gap.
+Open the ape door to the left with a sun key. Kill the minotaur. (Collect chaos gloves and a red n'egg.)
+Click the yellow button to your left to open the barred door leading to the Horn of Xtlaltic.
+Open the ape door to the right with a sun key. Kill the minotaur. (Collect a purple n'egg and chaos plate.)
+Click the yellow button to vanish an obelisk to the left of the Horn and release four monsters.
+Kill four monsters.
+Go through the barred door and bear left. (There is a teleport trap in front of it.)
+Collect an Amber Amulet.
+Click the yellow button to disable the teleport trap.
+Take the Horn of Xtlaltic from the wall!
+Go back and jump in the pit.
+Go to the unopened north-facing wooden door on the east side of this level. Open it with a common key.
+Jump in the pit.
+Go to the northeast corner and descend.
+Go west to the knight's pit and jump in the pit.
+Go south through the wooden doors and descend.
+Go straight and turn left through the open door. Make your way to the closed door on the east side just north of the stairs.
+Open the barred door with the crystal key.
+Descend.
+Take the portal back to the Keep.
+Sell off your trade goods.
+Make your way to the stairs and ascend; go straight and ascend; turn left.
+Place the Horn of Xtlaltic in the last slot!
+(This will bring up an antipiracy screen. Use hexx-manual.pdf to answer the questions.)
+The final grated door to your west has opened.
 
 
+Area 11: The Wizard's Castle
+----------------------------
+
+The sign says, "THE WIZARD WILL NOT SUFFER ANY MORTAL TO TRESPASS / -KEEP OUT-".
+Step on the portal plate. Kill the demon and the death knight.
+Go north. Collect the gold key from the alcove to your right.
+Open the gold door.
+(Turn left. Open the wooden door. It's just a bed.)
+(Collect 10 elf arrows.)
+Open the grated door with the gold key. Kill the red ogre. (Collect a scroll of formwall.)
+Turn right. Open the wooden door with a common key. Collect the sun key.
+Open the grated door with the sun key. Kill two skeletons.
+Follow the left wall. Open the wooden door. Collect the serpent key.
+Go back to the big room you started in. Go south.
+The sign says, "THE WIZARD BIDS YOU ENTER".
+Open the gold door with the serpent key. Kill the death knight.
+Follow around to the left. Kill the demon and the ogre.
+Open the south-facing wooden door with a common key. Kill two skeletons.
+Collect the silver key (and a scroll of vivify).
+Continue east. (Collect a Chymera Blood.)
+Open the gold door with the silver key. Ascend.
+(This whole level is anti-magic.)
+Turn right. Kill the skeleton.
+(Collect 10 hail of doom.)
+Open the door to the big shed in the northeast corner of the map. Collect the gold key.
+(Open the west-facing wooden door. Collect a stasis blade.)
+Return southward.
+(The gold door requires a night key.)
+The sign says, "BEWARE THE LEGION OF THE UNDEAD".
+Open the grated door with the gold key. Kill six skeletons. (Use the door strategically!)
+Enter and kill five more skeletons.
+(Collect crystal boots.)
+Open the wooden door at the end of this area. (Collect 10 elf arrows.)
+Click the green square to vanish a brazier in front of the blue square in the previous area.
+Click the blue square. (???)
+Click the purple dot to vanish a brazier at the west end of this area.
+Go through the gap. Collect the night key (and 10 elf arrows).
+Go back out and U-turn to your left. Open the gold door with the night key. This area is empty.
+(Open the wooden door at the end of the hall; it's just a bed.)
+The sign says, "NONE SHALL PASS".
+
+    1 h 3
+    4 5 6
+    7 8 9
+
+Stepping on any plate toggles the pit at "h". Don't worry about this for now.
+(The doors ahead and right will not budge. The door to the left needs a ruby key.)
+Going down the pit drops you into a new area! Find and kill the skeleton.
+(Collect 10 elf arrows and a red n'egg.)
+Open the wooden door. Kill the skeleton.
+Open the wooden door with a common key. Kill two ogres and two skeletons. Collect the crystal helm.
+In the northwest corner of this room, collect a well-hidden ruby key.
+(Go out and northeast. Open the south-facing wooden door. Kill two skeletons. Collect two n'eggs.)
+Go to the north side of the level. Open the gold door. Ascend.
+Click the red square to vanish a brazier in the south passage. You've been here before!
+Open the left-hand door with the ruby key.
+Step on the plate to change the vanishing pit at "h" into a vanishing plate at "h".
+Step on the plate at "h" to open the right-hand door. Kill the two skeletons.
+Click the red square to open the gold door. Go through the open door. This area is empty.
+Open the wooden door straight ahead. Collect the silver key, the Harvester, and 10 hail of doom.
+Go left. Open the gold door with the silver key. (Collect a red n'egg.)
+Open the wooden door with a common key. Kill the ogre.
+The sign says, "DRAGON TO CHAOS AND THEN THE LAST".
+(Collect a scroll of ethblade and a scroll of suspend.)
+Open the wooden door with a common key. Ascend.
+Open the barred door. (Collect a moon elixir.)
+Open the wooden door with a common key. Kill the death knight, two ogres, and a demon.
+Collect the sun key.
+Open the grated door with the sun key. Kill the orc.
+Open the gold door.
+(The grated door to your left requires a serpent key.)
+Open the grated door to your right. Kill two demons, a skeleton, and an ogre.
+The sign says, "USING THE MOON WILL OPEN THE TOMB".
+Collect the serpent key.
+Open the grated door with the serpent key.
+(Turn left. Open the wooden door with a common key. Kill two skeletons. Collect 10 arrows.)
+(Open the south-facing wooden door. Kill the skeleton and the orc. Collect crystal gloves.)
+(In the middle of this area is an orientation-flipping trap.)
+Go east. Open the wooden door with a common key. Kill the blue skeleton.
+Open the wooden door with a common key.
+When you hit the orientation-flipping trap, face west. Go down to the already-open wooden door.
+Collect the ruby key.
+Go back to the orientation-flipping trap. Face east. Go up to the gold door.
+Open the gold door with the ruby key. Kill the death knight and the demon.

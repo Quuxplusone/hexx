@@ -534,7 +534,7 @@ class Character:
         self.first_name = self.first_name.rstrip('\xFF')
         self.last_name = self.last_name.rstrip('\xFF')
         self.inventory = Inventory(True, inventory_contents)
-        assert self.byte_B131 == 0xFF
+        # assert self.byte_B131 == 0xFF
         assert self.bytes_B132_B136 == '\0\0\0\0'
 
     def dumps(self):
@@ -628,8 +628,9 @@ class SaveGame:
             Shop(contents[0xA10C:0xA144]),  # Grog Shop
             Shop(contents[0xA144:0xA17C]),  # We Sell The Best (South)
             Shop(contents[0xA17C:0xA1B4]),  # We Sell The Best (North)
+            Shop(contents[0xA1B4:0xA1EC]),  # Potions
         ]
-        self.bytes_A1B4_A23C = contents[0xA1B4:0xA23C]
+        self.bytes_A1EC_A23C = contents[0xA1EC:0xA23C]
         self.map_dimensions = struct.unpack('<HH', contents[0xA23C:0xA240])
         self.bytes_A240_B0CC = contents[0xA240:0xB0CC]
         self.characters = [
@@ -674,7 +675,7 @@ class SaveGame:
         contents += self.bytes_A040_A064
         for shop in self.shops:
             contents += shop.dumps()
-        contents += self.bytes_A1B4_A23C
+        contents += self.bytes_A1EC_A23C
         contents += struct.pack('<HH', *self.map_dimensions)
         contents += self.bytes_A240_B0CC
         for character in self.characters:
@@ -703,8 +704,7 @@ class SaveGame:
                     newpacks.add(count)
         while newpacks != packs:
             # Check for backpacks nested within backpacks.
-            packs = newpacks
-            newpacks = set()
+            packs = set(newpacks)
             for packno in packs:
                 for item, count in self.backpacks[packno]:
                     if item == Items.BACKPACK:
@@ -720,7 +720,7 @@ class SaveGame:
                     character.inventory[slot] = (Items.COMMON_KEY, 99)
                     done = True
         for packno in self.accessible_backpacks():
-            for slot in range(0, 16):
+            for slot in range(0, 12):
                 if self.backpacks[packno][slot][0] == Items.COMMON_KEY:
                     self.backpacks[packno][slot] = (Items.COMMON_KEY, 99)
                     done = True
@@ -733,7 +733,7 @@ class SaveGame:
                     character.inventory[slot] = (Items.COMMON_KEY, 99)
                     return
         for packno in self.accessible_backpacks():
-            for slot in range(0, 16):
+            for slot in range(0, 12):
                 if self.backpacks[packno][slot][0] == Items.NONE:
                     self.backpacks[packno][slot] = (Items.COMMON_KEY, 99)
                     return
@@ -747,7 +747,7 @@ class SaveGame:
                     if character.inventory[slot] == (item, count):
                         return
             for packno in self.accessible_backpacks():
-                for slot in range(0, 16):
+                for slot in range(0, 12):
                     if self.backpacks[packno][slot] == (item, count):
                         return
         # Look for an empty slot in a character's main inventory, or in a backpack.
@@ -757,7 +757,7 @@ class SaveGame:
                     character.inventory[slot] = (item, count)
                     return
         for packno in self.accessible_backpacks():
-            for slot in range(0, 16):
+            for slot in range(0, 12):
                 if self.backpacks[packno][slot][0] == Items.NONE:
                     self.backpacks[packno][slot] = (item, count)
                     return
@@ -990,6 +990,7 @@ if __name__ == '__main__':
             elif options.replace_thumbnail is not None:
                 sg.thumbnail = hexx_thumbnail_from_file(options.replace_thumbnail, w=60, h=34)
             else:
+                sg.gain_item(Items.SUN_KEY)
                 pass # assert False, 'no edits were specified'
             contents = sg.dumps()
             if options.reveal_map:
