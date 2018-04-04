@@ -73,7 +73,7 @@ Level 11 |   170000
 Level 12 |   200000
 Level 13 |   230000
 Level 14 |   270000
-Level 15 |   310000
+Level 15 |   310000 (possibly unachievable)
 
 
 Spell Prices
@@ -89,7 +89,7 @@ This comes partly from the manual (spell names and schools) and partly from expe
 - Warpower (400 GP)
 - Arc Bolt (400 GP)
 - Renew (400 GP)
-- Formwall
+- Formwall (700 GP)
 
 ### Yellow Spells (Chaos Magic)
 - Deflect (100 GP)
@@ -1286,6 +1286,8 @@ The final grated door to your west has opened.
 Area 11: The Wizard's Castle
 ----------------------------
 
+Before you leave the Keep for the last time, take all four talismans back off the walls, and take them with you. You will need them (and the fire and moon gems) in order to finish the game!
+
 The sign says, "THE WIZARD WILL NOT SUFFER ANY MORTAL TO TRESPASS / -KEEP OUT-".
 Step on the portal plate. Kill the demon and the death knight.
 Go north. Collect the gold key from the alcove to your right.
@@ -1315,10 +1317,10 @@ The sign says, "BEWARE THE LEGION OF THE UNDEAD".
 Open the grated door with the gold key. Kill six skeletons. (Use the door strategically!)
 Enter and kill five more skeletons.
 (Collect crystal boots.)
-Open the wooden door at the end of this area. (Collect 10 elf arrows.)
+Open the wooden door with a common key. (Collect 10 elf arrows.)
 Click the green square to vanish a brazier in front of the blue square in the previous area.
-Click the blue square. (???)
-Click the purple dot to vanish a brazier at the west end of this area.
+Click the blue square to vanish the plate at the west end of this area.
+Click the purple dot to vanish the brazier at the west end of this area.
 Go through the gap. Collect the night key (and 10 elf arrows).
 Go back out and U-turn to your left. Open the gold door with the night key. This area is empty.
 (Open the wooden door at the end of the hall; it's just a bed.)
@@ -1335,10 +1337,10 @@ Going down the pit drops you into a new area! Find and kill the skeleton.
 Open the wooden door. Kill the skeleton.
 Open the wooden door with a common key. Kill two ogres and two skeletons. Collect the crystal helm.
 In the northwest corner of this room, collect a well-hidden ruby key.
-(Go out and northeast. Open the south-facing wooden door. Kill two skeletons. Collect two n'eggs.)
+(Go out and northeast. Open the south-facing wooden door with a common key. Kill two skeletons. Collect a red n'egg.)
 Go to the north side of the level. Open the gold door. Ascend.
-Click the red square to vanish a brazier in the south passage. You've been here before!
-Open the left-hand door with the ruby key.
+Click the red square to vanish a wall to the south. Go south and left. You've been here before!
+Re-enter the puzzle room. Open the left-hand door with the ruby key.
 Step on the plate to change the vanishing pit at "h" into a vanishing plate at "h".
 Step on the plate at "h" to open the right-hand door. Kill the two skeletons.
 Click the red square to open the gold door. Go through the open door. This area is empty.
@@ -1367,3 +1369,106 @@ When you hit the orientation-flipping trap, face west. Go down to the already-op
 Collect the ruby key.
 Go back to the orientation-flipping trap. Face east. Go up to the gold door.
 Open the gold door with the ruby key. Kill the death knight and the demon.
+Turn left. Collect the crystal key (and a red n'egg).
+Step on (or in front of) the plate twice to rotate the wooden partition where you came in. (Both the plate and the space in front of it are hooked up to have the same effect.)
+Click the green button to open the left-hand door north of the trap. Go left.
+When you hit the orientation-flipping trap, face north. Turn left.
+Click the blue square to rotate the block to your north.
+When you hit the orientation-flipping trap, face east.
+Click the yellow button to vanish a brazier down near where you got the ruby key.
+When you hit the orientation-flipping trap, face west.
+Step on the portal plate to teleport a few spaces to your west.
+Open the right-hand wooden door. Collect the night key.
+Open the left-hand wooden door with a common key. (Collect a scroll of wizeye.)
+Open either grated door. Kill the death knight and the demon.
+Find and kill the orc.
+(Collect the crystal shield.)
+(Open the wooden door. Collect a dragon ale.)
+Open the gold door with the crystal key. Ascend. (Collect a power potion.)
+(You should still be carrying a night key.)
+Open the grated door. Kill the ogre.
+Watch out for the pit!
+(Open the wooden door with a common key. There is literally nothing in here.)
+Open the gold door with the night key.
+The sign says, "THE DARK ONE HAS ESCAPED HIS BONDS AND NOW RAVAGES THE LAND".
+Open the grated door.
+Visit the bed here to level up to Level 14!
+Open the wooden door with a common key. Kill the frogman and the skeleton.
+Open the left-hand grated door. Kill the skeleton.
+Use the fire gem. Kill the cyclops.
+(Collect dragon ale, power potion, 10 hail of doom, Vorpal Blade.)
+Collect the gold key. Return using the fire gem.
+Open the right-hand grated door. Kill the skeleton.
+Use the moon gem. Kill the cyclops.
+(Collect orc's vomit, chymera blood, 10 hail of doom, Slugger.)
+Collect the crystal key. Return using the moon gem.
+Go out and right. Open the wooden door with a common key.
+The sign says, "THE MASTER IS NOW THE SLAVE".
+Open the gold door. This area is empty.
+Open the grated door with the gold key.
+Click the red square to vanish a brazier in front of the other door.
+Open the gold door with the crystal key. This huge area is empty.
+(Turn left. Open the grated door. Kill two death knights and a demon. Collect crystal plate.)
+At the end of this area, behind a couple of illusory walls...
+The sign says, "HEREIN DWELLS THE MIGHTY WIZARD".
+(The gold door to your right is just a regen chamber.)
+Open the grated door, being prepared to close it again strategically!
+Kill Zendik the Wizard.
+(Collect a red n'egg, power potion, chymera blood.)
+Follow around. Open the gold door.
+(Collect Hedjog Venom, Orc's Vomit, scroll of levitate, scroll of wizeye, scroll of fireward.)
+Ascend to level 5.
+Open either grated door. Collect the silver key.
+The sign says, "YOU MUST PLACE THE CRYSTALS EACH IN SEQUENCE".
+Open the gold door with the silver key.
+
+Turn right. Open the gold door. Kill two knights and a cyclops.
+Look right. Kill another cyclops, two frogmen, a mage, and a death knight.
+Look left. Kill a demon.
+Go right. Kill a hooded valkyrie.
+(Now you cannot progress unless you have all four talismans. Teleport traps on either side of the room will prevent you from seeing the whole room.)
+
+Open the gold door at the end of the hall.
+Open the left-hand wooden door. It's just two beds.
+Open the right-hand wooden door.
+The sign says, "GODS MAY KILL AND MORTALS MAY FEAR".
+(Collect a scroll of wizeye.)
+The sign says, "THE CRYSTAL OF CHAOS SHALL SUMMON IT NEAR".
+
+Here is how to go back and get the talismans if you need to:
+
+- Go back and descend the stairs to level 4.
+- Check the map. Go all the way to the northwest corner. Jump in the pit.
+- Descend.
+- Check the map. Go back through the puzzle room, and turn east.
+- Find the stairs on the east side of the map and descend to level 1.
+- Follow the left wall back to the big room you started in.
+- Take the portal plate back to the Keep.
+- Go straight forward to the room with the slots.
+- Collect all four talismans.
+- Return to the Wizard's Castle via the portal plate.
+- Follow the left wall back to the stairs. Ascend.
+- Find the stairs in the northwest corner of level 2. Ascend.
+- Find the orientation-flipping trap; go west. Take the portal plate.
+- Find the stairs to the north of level 3. Ascend.
+- Find the stairs to the east of level 4. Ascend.
+- Follow the left wall to return to the room with the slots.
+
+
+Area 12: The Final Battle
+-------------------------
+
+Place Shaspuok's Tear in the south slot.
+(Go left. Open the grated door. Kill the demon.)
+(Go right. Collect 4 Phoenix Broths and 4 red n'eggs.)
+Go right. Place Angrath's Heart in the east slot.
+Go all the way around. Place Xtlaltic's Horn in the west slot.
+Place Grisslem's Eye in the north slot to vanish the wall behind you. Turn around! Kill the demon.
+
+Step on either portal plate to teleport into the central arena, which is anti-magic. Kill the giant dragon.
+During this battle, you can escape by stepping on the west plate, then the east plate, then the north plate, then the south plate.
+Click the gray square to vanish many braziers, allowing the dragon to escape so that you can fight it outside its anti-magic arena.
+
+However, since the dragon's arena is delimited by diagonally adjacent braziers, it is much much easier to just sneak-attack it through the diagonal gap over and over (using melee weapons or arrows, not magic) until it finally dies.
+
+The dragon's death triggers a cutscene in which the wizard is banished, the gods are freed, your party is named "Godfriends", and you win the game. Congratulations!
