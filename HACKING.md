@@ -31,6 +31,7 @@ cache) are represented as indices into the current level's map (so, 2*(y*LEVELWI
 location C000 represents the southeast corner of the northeast corner of the map, and if the current
 level is exactly 16 tiles wide, then 0022 represents the NE corner of the tile southeast of that one
 (because 2*(1*16+1) = 0x22).
+The current level's dimensions are held in [0xA23C .. 0xA240).
 
 "Floor-items" are represented as lists of consecutive variable-length records in the following format:
     <location> <record-length> <item-slot...>

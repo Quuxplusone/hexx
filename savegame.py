@@ -915,6 +915,7 @@ if __name__ == '__main__':
     group.add_argument('--describe-monsters', action='store_true', help='list all tracked monsters')
     group.add_argument('--edit', action='store_true', help='make changes to the file (and save a backup if necessary)')
     group.add_argument('--blank-range', type=str, metavar='1234:1238', help='zero out a portion of the file')
+    parser.add_argument('--blank-value', type=str, metavar='FF', help='fill value for --blank-range')
     group.add_argument('--gain-common-keys', action='store_true', help='make changes to the file (and save a backup if necessary)')
     group.add_argument('--gain-crystal-kit', action='store_true', help='make changes to the file (and save a backup if necessary)')
     group.add_argument('--gain-talismans', action='store_true', help='make changes to the file (and save a backup if necessary)')
@@ -990,7 +991,7 @@ if __name__ == '__main__':
             elif options.replace_thumbnail is not None:
                 sg.thumbnail = hexx_thumbnail_from_file(options.replace_thumbnail, w=60, h=34)
             else:
-                sg.gain_item(Items.SUN_KEY)
+                # sg.gain_item(Items.SUN_KEY)
                 pass # assert False, 'no edits were specified'
             contents = sg.dumps()
             if options.reveal_map:
@@ -1010,9 +1011,16 @@ if __name__ == '__main__':
                 #contents = contents[:0x8022] + ('\0' * (0xA002-0x8022)) + contents[0xA002:] # kill monsters
 
             if options.blank_range:
+                if options.blank_value:
+                    blank_value = int(options.blank_value, 16)
+                else:
+                    blank_value = 0x00
+                # max Torch
+                # contents = contents[:0xA042] + '\xFF' + contents[0xA043:]
+                # blank out with 0x05
                 for r in options.blank_range.split(','):
                     start, end = (int(x, 16) for x in r.split(':'))
-                    middle = ('\0' * (end - start))
+                    middle = (chr(blank_value) * (end - start))
                     contents = contents[:start] + middle + contents[end:]
             with open(fname, "wb") as f:
                 f.write(contents)
